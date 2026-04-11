@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>⚡ Ecarr — PreZero Madrid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ── VARIABLES ── */
+:root {
+  --bg:      #071520;
+  --bg2:     #0a1f2a;
+  --bg3:     #0d3040;
+  --bg4:     #133a4a;
+  --border:  #1a4f62;
+  --border2: #206070;
+  --accent:  #7dc520;
+  --accent2: #5fa010;
+  --text:    #d8eef0;
+  --text2:   #7ab0b8;
+  --text3:   #3a7080;
+  --red:     #e05050;
+  --orange:  #f08030;
+  --yellow:  #f0c040;
+  --green:   #7dc520;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── APP SHELL ── */
+#app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+
+/* ── HEADER ── */
+#header {
+  background: var(--bg2);
+  border-bottom: 2px solid var(--border);
+  padding: 10px 14px;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.logo-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+.logo-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.logo-sub {
+  font-size: 8px;
+  color: var(--text3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+/* ── NAV TABS ── */
+.nav-tabs {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+  margin-bottom: 10px;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: .5px;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.nav-tab.active {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+.nav-tab.accent-tab {
+  border-color: rgba(125,197,32,.4);
+  color: var(--accent);
+}
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: var(--bg3);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.stat-cell {
+  padding: 7px 4px;
+  text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat-cell:last-child { border-right: none; }
+.stat-num {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.stat-lbl {
+  font-size: 8px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+/* ── SEARCH & FILTERS ── */
+.search-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.search-input {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  outline: none;
+}
+.search-input::placeholder { color: var(--text3); }
+.btn-icon-sm {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--text2);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+.filter-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.filter-all {
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #000;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.filter-all.inactive {
+  background: var(--bg3);
+  color: var(--text2);
+  border-color: var(--border);
+}
+.filter-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.filter-dot.inactive { opacity: .35; }
+.rep-filter {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: var(--text2);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  outline: none;
+  max-width: 160px;
+}
+
+/* ── MAIN CONTENT ── */
+#main {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+/* ── PAGE ── */
+.page { display: none; padding: 0 10px 90px; }
+.page.active { display: block; }
+
+/* ── CONTADOR ── */
+.contador {
+  padding: 8px 4px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  letter-spacing: 1px;
+}
+
+/* ── TARJETA PARTE ── */
+.tarjeta {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 4px solid;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 13px;
+  cursor: pointer;
+  transition: opacity .1s;
+}
+.tarjeta:active { opacity: .8; }
+.tarjeta-inner { display: flex; align-items: flex-start; gap: 11px; }
+.tarjeta-num {
+  min-width: 50px;
+  height: 50px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  letter-spacing: 1px;
+}
+.tarjeta-body { flex: 1; min-width: 0; }
+.tarjeta-canton { font-size: 15px; font-weight: 700; color: var(--text); }
+.tarjeta-fecha { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.tarjeta-averia { font-size: 13px; font-weight: 600; color: var(--accent); line-height: 1.3; margin-bottom: 5px; }
+.tarjeta-nota { font-size: 11px; color: var(--text2); font-style: italic; margin-bottom: 5px; line-height: 1.3; }
+.tarjeta-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip-tipo {
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text2);
+}
+.tarjeta-estado {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(0,0,0,.4);
+  border-radius: 20px;
+  padding: 4px 9px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+.estado-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.estado-txt { font-size: 10px; font-weight: 700; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text3);
+}
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-txt { font-size: 14px; color: var(--text2); }
+
+/* ── SPINNER ── */
+.spinner {
+  width: 24px; height: 24px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-wrap { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 48px; color: var(--text3); }
+
+/* ── BOTONES ── */
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: .5px;
+}
+.btn-secondary {
+  background: var(--bg3);
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-full {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  letter-spacing: .5px;
+}
+.btn-danger {
+  background: rgba(224,80,80,.1);
+  border: 1px solid rgba(224,80,80,.3);
+  color: var(--red);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  letter-spacing: .5px;
+}
+.btn-tablon {
+  background: rgba(240,128,48,.08);
+  border: 1px solid rgba(240,128,48,.3);
+  color: var(--orange);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  letter-spacing: .5px;
+  margin-bottom: 8px;
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.7);
+  z-index: 500;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal-panel {
+  background: var(--bg2);
+  border-radius: 16px 16px 0 0;
+  width: min(640px, 100vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  border-radius: 16px 16px 0 0;
+}
+.modal-title { font-size: 16px; font-weight: 700; color: var(--accent); flex: 1; }
+.modal-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px 16px;
+  background: var(--bg2);
+}
+.btn-close {
+  background: none;
+  border: none;
+  color: var(--text2);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+}
+
+/* ── FORM FIELDS ── */
+.field-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  display: block;
+}
+.field-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 12px;
+}
+.field-input::placeholder { color: var(--text3); }
+.field-select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 15px;
+  outline: none;
+  margin-bottom: 12px;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+/* ── CHIPS TIPO ── */
+.chips-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip-sel {
+  padding: 6px 13px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.chip-sel.on {
+  background: rgba(125,197,32,.2) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+.chip-diag {
+  padding: 5px 11px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+}
+.chip-diag.on {
+  background: rgba(125,197,32,.2) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+/* ── ESTADO BOTONES DETALLE ── */
+.est-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; margin-bottom: 14px; }
+.est-btn {
+  padding: 8px 4px;
+  border-radius: 8px;
+  border: 1.5px solid;
+  background: var(--bg3);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: .5;
+  transition: all .15s;
+  letter-spacing: .3px;
+}
+.est-btn.on { opacity: 1 !important; }
+
+/* ── INFO GRID ── */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: var(--bg3);
+}
+.info-cell {
+  padding: 8px 10px;
+  background: var(--bg3);
+}
+.info-cell-border-r { border-right: 1px solid var(--border); }
+.info-cell-border-b { border-bottom: 1px solid var(--border); }
+.info-lbl { font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+.info-val { font-size: 13px; font-weight: 600; color: var(--text); }
+
+/* ── TABS DETALLE ── */
+.det-tabs { display: flex; gap: 4px; }
+.det-tab {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.det-tab.active {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+
+/* ── REPUESTOS ── */
+.rep-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--bg4);
+}
+.rep-nombre { font-size: 13px; color: var(--text); }
+.rep-cant { font-size: 15px; font-weight: 700; color: var(--accent); font-family: 'Rajdhani', sans-serif; }
+.rep-controls { display: flex; gap: 8px; align-items: center; }
+.qty-btn {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  width: 30px;
+  height: 32px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+.qty-num { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; min-width: 22px; text-align: center; color: var(--text); }
+.btn-add-rep {
+  background: var(--accent);
+  border: none;
+  border-radius: 7px;
+  padding: 7px 12px;
+  color: #000;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ── HISTORIAL ── */
+.hist-entry {
+  padding: 11px;
+  margin-bottom: 7px;
+  background: var(--bg3);
+  border-radius: 8px;
+  border-left: 3px solid;
+}
+.hist-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.hist-fecha { font-size: 11px; color: var(--text3); }
+.hist-estado { font-size: 10px; font-weight: 700; margin-left: auto; }
+.hist-averia { font-size: 13px; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
+.hist-nota-op { font-size: 12px; color: var(--text2); font-style: italic; margin-bottom: 3px; line-height: 1.4; }
+.hist-notas-mec { font-size: 12px; color: var(--text2); line-height: 1.4; margin-bottom: 3px; }
+.hist-chips { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 4px; }
+.hist-chip-diag { background: rgba(125,197,32,.1); border: 1px solid rgba(125,197,32,.3); border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 600; color: var(--accent); }
+.hist-reps { display: flex; flex-wrap: wrap; gap: 3px; }
+.hist-chip-rep { background: var(--bg4); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 10px; color: var(--text2); }
+
+/* ── BLINK ── */
+.blink-card {
+  padding: 12px;
+  background: var(--bg3);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+.blink-code {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(125,197,32,.1);
+  border: 1px solid rgba(125,197,32,.3);
+  border-radius: 6px;
+  padding: 2px 10px;
+  margin-bottom: 6px;
+}
+.blink-desc { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+.blink-sol { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+/* ── ALMACÉN ── */
+.alm-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--bg4);
+}
+.alm-nombre { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+.alm-ubi { font-size: 11px; color: var(--text3); }
+.alm-stock { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; }
+.alm-unit { font-size: 10px; color: var(--text3); }
+
+/* ── VISTA CARROS ── */
+.carros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  padding: 8px 0 80px;
+}
+.carro-card {
+  background: var(--bg3);
+  border: 1px solid;
+  border-top-width: 3px;
+  border-radius: 9px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+}
+.carro-mat { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; line-height: 1; }
+.carro-canton { font-size: 10px; color: var(--text3); margin: 3px 0; }
+.carro-est { font-size: 9px; font-weight: 700; letter-spacing: .5px; }
+.carro-averia { font-size: 10px; color: var(--accent); margin-top: 4px; line-height: 1.2; }
+
+/* ── PENDIENTES ── */
+.pend-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px;
+  background: var(--bg3);
+  border-left: 3px solid var(--yellow);
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.pend-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--yellow);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.pend-body { flex: 1; min-width: 0; }
+.pend-carro { font-size: 13px; font-weight: 700; color: var(--accent); }
+.pend-txt { font-size: 14px; color: var(--text); line-height: 1.4; }
+.pend-fecha { font-size: 10px; color: var(--text3); margin-top: 3px; }
+.pend-del { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; flex-shrink: 0; }
+
+/* ── TABLÓN ── */
+.tablon-entry {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-left: 3px solid;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.tablon-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.tablon-num { font-family: 'Rajdhani', sans-serif; font-size: 17px; font-weight: 700; border-radius: 6px; padding: 1px 8px; }
+.tablon-canton { font-size: 11px; color: var(--text3); }
+.tablon-fecha { font-size: 10px; color: var(--text3); margin-left: auto; }
+.tablon-titulo { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.tablon-msg { font-size: 13px; color: var(--text2); line-height: 1.4; }
+.tablon-autor { font-size: 10px; color: var(--text3); margin-top: 6px; }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 1000;
+  display: none;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,.5);
+}
+#toast.show { display: block; animation: fadeInOut 2.5s forwards; }
+#toast.ok { border-color: var(--green); color: var(--green); }
+#toast.err { border-color: var(--red); color: var(--red); }
+@keyframes fadeInOut {
+  0%   { opacity:0; transform:translateX(-50%) translateY(8px); }
+  15%  { opacity:1; transform:translateX(-50%) translateY(0); }
+  75%  { opacity:1; }
+  100% { opacity:0; }
+}
+
+/* ── LOGIN ── */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  padding: 32px;
+}
+.login-logo { font-size: 48px; margin-bottom: 8px; }
+.login-title { font-size: 28px; font-weight: 700; color: var(--accent); letter-spacing: 2px; margin-bottom: 4px; }
+.login-sub { font-size: 11px; color: var(--text3); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 32px; }
+.login-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+}
+.login-error { color: var(--red); font-size: 13px; text-align: center; margin-bottom: 10px; display: none; }
+
+/* ── REALTIME DOT ── */
+#realtime-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--yellow);
+  flex-shrink: 0;
+  transition: background .5s;
+}
+
+/* ── DROPDOWN BÚSQUEDA CARRO ── */
+#carro-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0; right: 0;
+  z-index: 300;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,.5);
+}
+.dropdown-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--bg4);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dropdown-item:hover { background: var(--bg4); }
+.dropdown-mat { font-family: 'Rajdhani', sans-serif; font-size: 18px; font-weight: 700; color: var(--accent); }
+.dropdown-can { font-size: 12px; color: var(--text2); }
+
+/* ── NOTA PENDIENTE BTN ── */
+.btn-nota-pend {
+  width: 100%;
+  background: rgba(125,197,32,.08);
+  border: 1px solid rgba(125,197,32,.3);
+  border-radius: 8px;
+  padding: 10px;
+  color: var(--accent);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 14px;
+  letter-spacing: .5px;
+}
+
+/* ── RESPONSIVE ── */
+@media (min-width: 600px) {
+  .modal-overlay { align-items: center; }
+  .modal-panel { border-radius: 14px; max-height: 85vh; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-logo">⚡</div>
+  <div class="login-title">ECARR</div>
+  <div class="login-sub">PreZero Madrid · Gestión de carros</div>
+  <div class="login-card">
+    <div id="login-error" class="login-error"></div>
+    <span class="field-lbl">Nº EMPLEADO</span>
+    <input type="number" id="l-emp" class="field-input" placeholder="Ej: 1234" inputmode="numeric">
+    <span class="field-lbl">PIN</span>
+    <input type="password" id="l-pin" class="field-input" placeholder="4-6 dígitos" inputmode="numeric" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-primary btn-full" onclick="doLogin()">ENTRAR</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+
+  <!-- HEADER -->
+  <div id="header">
+    <div class="header-top">
+      <div class="header-logo">
+        <div class="logo-icon">⚡</div>
+        <div>
+          <div class="logo-text">ECARR <span id="rt-dot-wrap"><span id="realtime-dot"></span></span></div>
+          <div class="logo-sub">GESTIÓN DE REPARACIONES</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span id="user-name" style="font-size:12px;color:var(--accent)"></span>
+        <button class="btn-primary" onclick="openNuevoParte()" id="btn-nuevo-parte">+ PARTE</button>
+      </div>
+    </div>
+
+    <!-- NAV TABS -->
+    <div class="nav-tabs" id="nav-tabs">
+      <button class="nav-tab active" onclick="setVista('hoy',this)" id="tab-hoy">📅 HOY</button>
+      <button class="nav-tab" onclick="setVista('pendiente',this)" id="tab-pendiente">📋 PENDIENTE</button>
+      <button class="nav-tab" onclick="setVista('todos',this)" id="tab-todos">📊 TODOS</button>
+      <button class="nav-tab accent-tab" onclick="showPage('blink')">⚡ BLINK</button>
+      <button class="nav-tab" onclick="showPage('almacen')">🔩 ALMACÉN</button>
+      <button class="nav-tab" onclick="showPage('carros')">🚗 CARROS</button>
+      <button class="nav-tab" onclick="showPage('pendientes')">📋 PENDIENTES</button>
+      <button class="nav-tab" onclick="showPage('tablon')">📢 TABLÓN</button>
+      <button class="nav-tab" onclick="window.open('https://script.google.com/macros/s/AKfycbzESKFRjU_j5V1ltvr-l1QzgFCL61D0fDQ12x5agVbZRWnulbhhUkP2LOzZRMS9gRym/exec?page=tecnico','_blank')">⚡ ESQUEMA</button>
+      <button class="nav-tab" onclick="window.open('https://script.google.com/macros/s/AKfycbzESKFRjU_j5V1ltvr-l1QzgFCL61D0fDQ12x5agVbZRWnulbhhUkP2LOzZRMS9gRym/exec?page=despiece','_blank')">🔩 DESPIECE</button>
+    </div>
+
+    <!-- STATS (solo panel) -->
+    <div id="stats-wrap">
+      <div class="stats-bar" style="margin-bottom:10px">
+        <div class="stat-cell"><div class="stat-num" id="s-total" style="color:var(--text)">—</div><div class="stat-lbl">TOTAL</div></div>
+        <div class="stat-cell"><div class="stat-num" id="s-pend" style="color:var(--red)">—</div><div class="stat-lbl">PENDIENTE</div></div>
+        <div class="stat-cell"><div class="stat-num" id="s-leve" style="color:var(--yellow)">—</div><div class="stat-lbl">LEVE</div></div>
+        <div class="stat-cell"><div class="stat-num" id="s-rep" style="color:var(--orange)">—</div><div class="stat-lbl">REPARANDO</div></div>
+        <div class="stat-cell"><div class="stat-num" id="s-op" style="color:var(--green)">—</div><div class="stat-lbl">OPERATIVO</div></div>
+      </div>
+      <div class="search-row">
+        <input type="text" id="buscar" class="search-input" placeholder="Buscar carro, cantón..." oninput="renderPanel()">
+        <button class="btn-icon-sm" onclick="cargar()">↻</button>
+      </div>
+      <div class="filter-dots">
+        <button class="filter-all" id="f-todos" onclick="setFiltro('todos',this)">TODOS</button>
+        <div class="filter-dot" style="background:var(--red);border-color:var(--red)" onclick="setFiltro('pendiente',this)" title="Pendiente"></div>
+        <div class="filter-dot" style="background:var(--yellow);border-color:var(--yellow)" onclick="setFiltro('leve',this)" title="Leve"></div>
+        <div class="filter-dot" style="background:var(--orange);border-color:var(--orange)" onclick="setFiltro('reparando',this)" title="Reparando"></div>
+        <div class="filter-dot" style="background:var(--green);border-color:var(--green)" onclick="setFiltro('operativo',this)" title="Operativo"></div>
+        <select class="rep-filter" id="f-rep" onchange="renderPanel()">
+          <option value="">🔩 Todos</option>
+          <option>Relé</option><option>Micro</option><option>Potenciómetro</option>
+          <option>Muelle</option><option>LCD</option><option>Soportes motor</option>
+          <option>Cable cargador</option><option>Cargador</option><option>Batería</option>
+          <option>Motor</option><option>Freno motor</option><option>Rueda</option>
+          <option>Chasis</option><option>Rotativo</option><option>Gomas</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- PANEL AVERÍAS -->
+    <div class="page active" id="page-panel">
+      <div class="contador" id="contador"></div>
+      <div id="lista-panel"></div>
+    </div>
+
+    <!-- BLINK CODES -->
+    <div class="page" id="page-blink">
+      <input type="text" class="search-input" style="margin:10px 0" placeholder="Buscar código o descripción..." oninput="renderBlink(this.value)">
+      <div id="lista-blink"></div>
+    </div>
+
+    <!-- ALMACÉN -->
+    <div class="page" id="page-almacen">
+      <input type="text" class="search-input" style="margin:10px 0" placeholder="Buscar repuesto..." oninput="renderAlmacen(this.value)">
+      <div id="lista-almacen"></div>
+    </div>
+
+    <!-- CARROS -->
+    <div class="page" id="page-carros">
+      <input type="text" class="search-input" style="margin:10px 0" placeholder="Buscar carro o cantón..." oninput="renderCarros(this.value)">
+      <div class="carros-grid" id="grid-carros"></div>
+    </div>
+
+    <!-- PENDIENTES -->
+    <div class="page" id="page-pendientes">
+      <div style="padding:8px 0 10px;display:flex;justify-content:flex-end">
+        <button class="btn-primary" onclick="openNuevoPendiente()">+ AÑADIR</button>
+      </div>
+      <div id="lista-pendientes"></div>
+    </div>
+
+    <!-- TABLÓN -->
+    <div class="page" id="page-tablon">
+      <div style="padding:8px 0 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="filter-all" id="tf-todos" onclick="setTablonFiltro('todos',this)">TODOS</button>
+        <button class="filter-all inactive" id="tf-mecanico" onclick="setTablonFiltro('mecanico',this)">🔧 MECÁNICO</button>
+        <button class="filter-all inactive" id="tf-operario" onclick="setTablonFiltro('operario',this)">👷 OPERARIO</button>
+        <button class="btn-primary" style="margin-left:auto" onclick="openNuevaNotaTablon()">+ NOTA</button>
+      </div>
+      <div id="lista-tablon"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MODALES                                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+
+<!-- MODAL NUEVO PARTE -->
+<div class="modal-overlay" id="modal-nuevo-parte">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <button class="btn-close" onclick="closeModal('modal-nuevo-parte')">✕</button>
+      <div class="modal-title">Nuevo parte — Ecarr</div>
+    </div>
+    <div class="modal-body">
+      <span class="field-lbl">CARRO Nº *</span>
+      <div style="position:relative;margin-bottom:12px">
+        <input type="text" id="np-carro-search" class="field-input" style="margin:0" placeholder="Número del carro (203–317)..." oninput="buscarCarroNuevo(this.value)" autocomplete="off">
+        <div id="carro-dropdown" style="display:none"></div>
+        <div id="np-carro-sel" style="display:none;margin-top:6px;padding:8px 12px;background:rgba(125,197,32,.1);border:1px solid rgba(125,197,32,.3);border-radius:8px;font-size:16px;font-weight:700;color:var(--accent)"></div>
+        <input type="hidden" id="np-carro-id">
+      </div>
+      <span class="field-lbl">CANTÓN</span>
+      <input type="text" id="np-canton" class="field-input" placeholder="Auto-rellenado..." readonly>
+      <span class="field-lbl">TIPO DE AVERÍA * (uno o varios)</span>
+      <div class="chips-wrap" id="np-tipos"></div>
+      <span class="field-lbl">NOTAS</span>
+      <textarea id="np-notas" class="field-input" style="min-height:65px;resize:none" placeholder="Descripción adicional..."></textarea>
+      <button class="btn-primary btn-full" onclick="guardarNuevoParte()">GUARDAR PARTE</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE PARTE -->
+<div class="modal-overlay" id="modal-detalle">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <button class="btn-close" onclick="closeModal('modal-detalle')">✕</button>
+      <div style="flex:1">
+        <div class="modal-title" id="det-num">Parte #—</div>
+        <div style="font-size:11px;color:var(--text2)" id="det-sub">—</div>
+      </div>
+      <div class="det-tabs">
+        <button class="det-tab active" onclick="detTab('parte',this)">📋 PARTE</button>
+        <button class="det-tab" onclick="detTab('hist',this)">🕐 HISTORIAL</button>
+      </div>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <!-- TAB PARTE -->
+      <div id="det-tab-parte" style="padding:14px;background:var(--bg2)">
+        <div class="info-grid">
+          <div class="info-cell info-cell-border-r info-cell-border-b"><div class="info-lbl">FECHA</div><div class="info-val" id="det-fecha">—</div></div>
+          <div class="info-cell info-cell-border-b"><div class="info-lbl">CARRO</div><div class="info-val" id="det-carro" style="font-size:20px;color:var(--accent)">—</div></div>
+          <div class="info-cell info-cell-border-r"><div class="info-lbl">CANTÓN</div><div class="info-val" id="det-canton">—</div></div>
+          <div class="info-cell"><div class="info-lbl">AVERÍAS</div><div id="det-averias" style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px"></div></div>
+        </div>
+        <!-- Descripción operario -->
+        <div id="det-desc-wrap" style="display:none;margin-bottom:14px;padding:10px 12px;background:rgba(125,197,32,.06);border:1px solid rgba(125,197,32,.2);border-radius:8px">
+          <div class="info-lbl" style="margin-bottom:4px">DEL OPERARIO</div>
+          <div id="det-desc" style="font-size:13px;color:var(--text);line-height:1.5"></div>
+        </div>
+        <!-- Estado -->
+        <div class="info-lbl" style="margin-bottom:6px">ESTADO</div>
+        <div class="est-grid">
+          <button onclick="cambiarEstado('pendiente_revision')" id="est-pendiente_revision" class="est-btn" style="border-color:var(--red);color:var(--red)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--red);margin:0 auto 3px"></div>PENDIENTE REVISAR
+          </button>
+          <button onclick="cambiarEstado('averia_leve')" id="est-averia_leve" class="est-btn" style="border-color:var(--yellow);color:var(--yellow)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--yellow);margin:0 auto 3px"></div>LEVE
+          </button>
+          <button onclick="cambiarEstado('en_reparacion')" id="est-en_reparacion" class="est-btn" style="border-color:var(--orange);color:var(--orange)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--orange);margin:0 auto 3px"></div>REPARANDO
+          </button>
+          <button onclick="cambiarEstado('operativo')" id="est-operativo" class="est-btn" style="border-color:var(--green);color:var(--green)">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--green);margin:0 auto 3px"></div>OPERATIVO
+          </button>
+        </div>
+        <!-- Nota pendiente -->
+        <button class="btn-nota-pend" onclick="openNotaPendiente()">📋 + NOTA PENDIENTE</button>
+        <!-- Tipo avería diagnosticada -->
+        <div class="info-lbl" style="margin-bottom:6px">TIPO AVERÍA DIAGNOSTICADA <span style="color:var(--text3);font-weight:400">(VARIOS)</span></div>
+        <div class="chips-wrap" id="det-diag"></div>
+        <!-- Blink -->
+        <button onclick="showPage('blink');closeModal('modal-detalle')" style="width:100%;background:rgba(240,128,48,.08);border:1px solid rgba(240,128,48,.3);border-radius:8px;padding:10px 14px;color:var(--orange);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+          <span>⚡ CONSULTAR BLINK CODE</span><span style="font-size:11px;opacity:.6">1.1 · 2.3 · ...</span>
+        </button>
+        <!-- Repuestos -->
+        <div class="info-lbl" style="margin-bottom:6px">REPUESTOS MONTADOS</div>
+        <div id="det-reps" style="font-size:12px;color:var(--text3);font-style:italic;margin-bottom:8px">Sin repuestos añadidos</div>
+        <div class="rep-controls" style="margin-bottom:14px">
+          <select id="det-rep-sel" class="field-select" style="flex:1;margin:0;font-size:14px;padding:8px 10px">
+            <option value="">— Seleccionar —</option>
+            <option>Relé</option><option>Micro</option><option>Potenciómetro</option>
+            <option>Muelle</option><option>LCD</option><option>Soportes motor</option>
+            <option>Cable cargador</option><option>Cargador</option><option>Batería</option>
+            <option>Motor</option><option>Freno motor</option><option>Rueda</option>
+            <option>Chasis</option><option>Rotativo</option><option>Gomas</option>
+            <option>Seta</option><option>Clausor</option><option>Instalación motor</option>
+            <option>Instalación controladora</option><option>Otros</option>
+          </select>
+          <button class="qty-btn" onclick="repQty(-1)">−</button>
+          <span class="qty-num" id="det-rep-qty">1</span>
+          <button class="qty-btn" onclick="repQty(1)">+</button>
+          <button class="btn-add-rep" onclick="añadirRep()">+ AÑADIR</button>
+        </div>
+        <!-- Notas reparación -->
+        <div class="info-lbl" style="margin-bottom:6px">NOTAS DE REPARACIÓN</div>
+        <textarea id="det-notas" class="field-input" style="min-height:65px;resize:none;margin-bottom:14px" placeholder="Notas de reparación..."></textarea>
+        <!-- Fotos -->
+        <div class="info-lbl" style="margin-bottom:6px">FOTOS DEL TÉCNICO</div>
+        <label style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;border-radius:8px;border:1.5px dashed var(--border2);background:var(--bg3);cursor:pointer;color:var(--text2);font-size:13px;margin-bottom:8px">
+          📷 AÑADIR FOTOS<input type="file" accept="image/*" multiple style="display:none" onchange="subirFotos(this)">
+        </label>
+        <div id="det-fotos" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+        <!-- Acciones -->
+        <button class="btn-primary btn-full" onclick="guardarDetalle()" style="margin-bottom:10px">GUARDAR</button>
+        <button class="btn-tablon" onclick="openNotaTablon()">📢 AÑADIR NOTA AL TABLÓN</button>
+        <button class="btn-danger" onclick="eliminarParte()">🗑 ELIMINAR PARTE</button>
+      </div>
+      <!-- TAB HISTORIAL -->
+      <div id="det-tab-hist" style="display:none;padding:14px;background:var(--bg2)">
+        <div id="det-hist"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BLINK (pantalla completa por búsqueda) -->
+
+<!-- MODAL NUEVO PENDIENTE -->
+<div class="modal-overlay" id="modal-nuevo-pend">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <button class="btn-close" onclick="closeModal('modal-nuevo-pend')">✕</button>
+      <div class="modal-title">📋 Nueva tarea pendiente</div>
+    </div>
+    <div class="modal-body">
+      <span class="field-lbl">CARRO (opcional)</span>
+      <input type="text" id="pend-carro" class="field-input" placeholder="Número del carro...">
+      <span class="field-lbl">TAREA *</span>
+      <textarea id="pend-texto" class="field-input" style="min-height:80px;resize:none" placeholder="Ej: Pendiente cambiar rotativo al 235..."></textarea>
+      <button class="btn-primary btn-full" onclick="guardarPendiente()">GUARDAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVA NOTA TABLÓN -->
+<div class="modal-overlay" id="modal-nuevo-tablon">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <button class="btn-close" onclick="closeModal('modal-nuevo-tablon')">✕</button>
+      <div class="modal-title">📢 Nueva nota al tablón</div>
+    </div>
+    <div class="modal-body">
+      <span class="field-lbl">CARRO (opcional)</span>
+      <input type="text" id="tabl-carro" class="field-input" placeholder="Número del carro...">
+      <span class="field-lbl">TÍTULO</span>
+      <input type="text" id="tabl-titulo" class="field-input" placeholder="Título de la nota...">
+      <span class="field-lbl">MENSAJE</span>
+      <textarea id="tabl-msg" class="field-input" style="min-height:80px;resize:none" placeholder="Descripción..."></textarea>
+      <button class="btn-primary btn-full" onclick="guardarTablon()">GUARDAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+//  CONFIG SUPABASE
+// ════════════════════════════════════════════════════════════
+const SUPA_URL = 'https://ruqzfrhfnmholbqsrelz.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1cXpmcmhmbm1ob2xicXNyZWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDMzNzIsImV4cCI6MjA4OTU3OTM3Mn0.5HSqvUKt5KnXCtpkRPSYoTRa4zceqVS-1YnCIkx7Xqg';
+const db = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+// ════════════════════════════════════════════════════════════
+//  CONSTANTES
+// ════════════════════════════════════════════════════════════
+const TIPOS_AVERIA = [
+  'NO ENCIENDE','NO SE MUEVE','NO CARGA','SIN FUERZA',
+  'SE MUEVE SOLO','SOLO AVANZA','SOLO RETROCEDE',
+  'NO SE QUEDA FRENADO','NO SE PUEDE GIRAR',
+  'SOPORTES DE CEPILLOS','LUCES','OTROS'
+];
+
+const DIAG_CHIPS = [
+  'Relé','Instalación controladora','Instalación mandos','Instalación motor',
+  'Otros cables','Micro','Potenciómetro','LCD','Cargador','Cable cargador',
+  'Sin batería','Batería','Rueda','Motor','Freno motor','Chasis','Soportes','Otros'
+];
+
+const BLINK_CODES = [
+  {c:'1-1',d:'Error controladora — reset general',s:'Apagar/encender. Revisar conexiones controladora.'},
+  {c:'1-2',d:'Sobrecorriente en motor',s:'Revisar motor y cables. Posible cortocircuito.'},
+  {c:'1-3',d:'Batería baja',s:'Cargar batería. Revisar cargador y cable.'},
+  {c:'2-1',d:'Error potenciómetro',s:'Revisar potenciómetro y conexiones.'},
+  {c:'2-2',d:'Fallo micro de marcha',s:'Revisar y ajustar micros. Cambiar si defectuosos.'},
+  {c:'2-3',d:'Error freno motor',s:'Revisar freno motor. Cambiar si bloqueado.'},
+  {c:'3-1',d:'Temperatura elevada',s:'Dejar enfriar. Revisar ventilación y carga.'},
+  {c:'3-2',d:'Error relé principal',s:'Cambiar relé. Revisar soldaduras.'},
+  {c:'3-3',d:'Fallo instalación eléctrica',s:'Revisar cableado completo, buscar cortes o cortocircuitos.'},
+  {c:'4-1',d:'Error LCD / pantalla',s:'Revisar conector LCD. Cambiar pantalla.'},
+  {c:'4-2',d:'Error cargador interno',s:'Revisar cable cargador y conector.'},
+  {c:'4-3',d:'Fallo GPS',s:'Revisar antena y conexión GPS.'},
+  {c:'5-1',d:'Motor bloqueado',s:'Revisar cuerpos extraños. Revisar rodamientos.'},
+  {c:'5-2',d:'Error seta emergencia',s:'Verificar seta no presionada. Limpiar contactos.'},
+  {c:'5-3',d:'Fallo general — diagnóstico necesario',s:'Usar polímetro. Contactar taller.'},
+];
+
+const COL_ESTADO = {
+  pendiente_revision:'#e05050',
+  averia_leve:'#f0c040',
+  en_reparacion:'#f08030',
+  operativo:'#7dc520'
+};
+const COL_PARTE = {
+  abierto:'#e05050',asignado:'#f08030',en_curso:'#f08030',
+  cerrado_pendiente:'#f0c040',cerrado:'#7dc520',cancelado:'#3a7080'
+};
+const LBL_PARTE = {
+  abierto:'PENDIENTE',asignado:'REPARANDO',en_curso:'REPARANDO',
+  cerrado_pendiente:'ARREGLADO',cerrado:'OPERATIVO',cancelado:'CANCELADO'
+};
+
+// ════════════════════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ════════════════════════════════════════════════════════════
+let G = {
+  user: null, userData: null,
+  modeloId: null,
+  vehs: {}, partes: [],
+  almacen: [], tablonDatos: [], pendientesData: [],
+  vista: 'hoy', filtroEstado: 'todos',
+  tablonFiltro: 'todos',
+  parteActual: null, repQty: 1,
+  realtimeChannel: null, pollingTimer: null,
+};
+
+// ════════════════════════════════════════════════════════════
+//  LOGIN
+// ════════════════════════════════════════════════════════════
+async function doLogin() {
+  const emp = document.getElementById('l-emp').value.trim();
+  const pin = document.getElementById('l-pin').value.trim();
+  const err = document.getElementById('login-error');
+  err.style.display = 'none';
+  if (!emp || !pin) { err.textContent = 'Introduce nº empleado y PIN'; err.style.display='block'; return; }
+
+  const { data, error } = await db.from('usuarios')
+    .select('*').eq('num_empleado', emp).eq('activo', true).single();
+
+  if (error || !data) { err.textContent = 'Usuario no encontrado'; err.style.display='block'; return; }
+
+  // Verificar PIN (hash simple o texto plano según implementación)
+  const pinOk = data.pin === pin || data.pin === btoa(pin) || !data.pin;
+  if (!pinOk) { err.textContent = 'PIN incorrecto'; err.style.display='block'; return; }
+
+  G.user = data;
+  G.userData = data;
+  document.getElementById('user-name').textContent = data.nombre?.split(' ')[0] || '';
+
+  // Ocultar campos no relevantes según rol
+  if (data.rol === 'operario') {
+    document.getElementById('btn-nuevo-parte').style.display = 'none';
+    document.getElementById('stats-wrap').style.display = 'none';
+  }
+
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+
+  await initApp();
+}
+
+// Acceso rápido sin login (para desarrollo — quitar en producción)
+async function quickAccess() {
+  G.user = { id: 'e851e98f-198b-4e09-9af7-5c87034559d0', rol: 'jefe_taller', nombre: 'José' };
+  G.userData = G.user;
+  document.getElementById('user-name').textContent = 'José';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  await initApp();
+}
+
+// ════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════
+async function initApp() {
+  // Generar chips una sola vez
+  document.getElementById('np-tipos').innerHTML = TIPOS_AVERIA.map(t =>
+    `<button class="chip-sel" onclick="chipToggle(this)">${t}</button>`).join('');
+  document.getElementById('det-diag').innerHTML = DIAG_CHIPS.map(t =>
+    `<button class="chip-diag" onclick="chipToggle(this)">${t}</button>`).join('');
+
+  // Render blink
+  renderBlink('');
+
+  await getModeloId();
+  await cargar();
+}
+
+async function getModeloId() {
+  if (G.modeloId) return G.modeloId;
+  const { data } = await db.from('modelos_vehiculo').select('id').eq('marca','Ecarr').single();
+  if (data) G.modeloId = data.id;
+  return G.modeloId;
+}
+
+// ════════════════════════════════════════════════════════════
+//  CARGAR DATOS
+// ════════════════════════════════════════════════════════════
+async function cargar() {
+  mostrarLoadingPanel();
+  try {
+    const mid = await getModeloId();
+    if (!mid) { mostrarError('Modelo Ecarr no encontrado en Supabase'); return; }
+
+    const { data: vehs } = await db.from('vehiculos')
+      .select('id,matricula,estado,notas,cantones(nombre)')
+      .eq('modelo_id', mid).eq('activo', true);
+
+    G.vehs = {};
+    (vehs||[]).forEach(v => G.vehs[v.id] = v);
+    const vIds = Object.keys(G.vehs);
+
+    // Stats
+    const nOp   = (vehs||[]).filter(v=>v.estado==='operativo').length;
+    const nLeve = (vehs||[]).filter(v=>v.estado==='averia_leve').length;
+    const nRep  = (vehs||[]).filter(v=>v.estado==='en_reparacion').length;
+    const nPend = (vehs||[]).filter(v=>v.estado==='pendiente_revision').length;
+    setText('s-total',(vehs||[]).length);
+    setText('s-pend', nPend); setText('s-leve', nLeve);
+    setText('s-rep',  nRep);  setText('s-op',   nOp);
+
+    if (!vIds.length) { G.partes=[]; renderPanel(); return; }
+
+    const hoy = new Date(); hoy.setHours(0,0,0,0);
+    const { data: partes } = await db.from('partes_averia')
+      .select('id,numero_parte,titulo,descripcion,canton,estado,created_at,updated_at,vehiculo_id,notas_mecanico,tipo_diag,fotos_reparacion,fuente')
+      .in('vehiculo_id', vIds)
+      .not('estado','in','("cerrado","cancelado")')
+      .order('created_at',{ascending:false})
+      .limit(300);
+
+    G.partes = partes||[];
+
+    // Recalcular stats con partes reales
+    const nPartesRep  = G.partes.filter(p=>['en_curso','asignado'].includes(p.estado)).length;
+    const nPartesPend = G.partes.filter(p=>p.estado==='abierto').length;
+    if (nPartesRep > 0) setText('s-rep', nPartesRep);
+    if (nPartesPend > 0) setText('s-pend', nPartesPend);
+
+    renderPanel();
+    activarRealtime(vIds);
+
+  } catch(e) {
+    mostrarError(e.message);
+    console.error(e);
+  }
+}
+
+async function cargarSilencioso() {
+  try {
+    const mid = await getModeloId();
+    if (!mid) return;
+    const vIds = Object.keys(G.vehs);
+    if (!vIds.length) return;
+
+    const [{ data: vehs }, { data: partes }] = await Promise.all([
+      db.from('vehiculos').select('id,matricula,estado,notas,cantones(nombre)').eq('modelo_id',mid).eq('activo',true),
+      db.from('partes_averia').select('id,numero_parte,titulo,descripcion,canton,estado,created_at,updated_at,vehiculo_id,notas_mecanico,tipo_diag,fotos_reparacion,fuente').in('vehiculo_id',vIds).not('estado','in','("cerrado","cancelado")').order('created_at',{ascending:false}).limit(300)
+    ]);
+
+    G.vehs = {};
+    (vehs||[]).forEach(v => G.vehs[v.id] = v);
+    G.partes = partes||[];
+
+    const nOp=(vehs||[]).filter(v=>v.estado==='operativo').length;
+    const nLeve=(vehs||[]).filter(v=>v.estado==='averia_leve').length;
+    const nRep=(vehs||[]).filter(v=>v.estado==='en_reparacion').length;
+    const nPend=(vehs||[]).filter(v=>v.estado==='pendiente_revision').length;
+    setText('s-total',(vehs||[]).length); setText('s-pend',nPend);
+    setText('s-leve',nLeve); setText('s-rep',nRep); setText('s-op',nOp);
+
+    renderPanel();
+  } catch(e) { console.warn('cargarSilencioso:', e); }
+}
+
+// ════════════════════════════════════════════════════════════
+//  REALTIME
+// ════════════════════════════════════════════════════════════
+function activarRealtime(vIds) {
+  if (G.realtimeChannel) { try { db.removeChannel(G.realtimeChannel); } catch(e){} }
+  if (G.pollingTimer) { clearInterval(G.pollingTimer); }
+
+  G.realtimeChannel = db.channel('ecarr-rt')
+    .on('postgres_changes',{event:'*',schema:'public',table:'partes_averia',filter:'fuente=eq.ecarr'}, payload => {
+      procesarRealtime(payload);
+    })
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'vehiculos'}, payload => {
+      if (G.vehs[payload.new?.id]) { G.vehs[payload.new.id].estado = payload.new.estado; renderPanel(); }
+    })
+    .subscribe(status => {
+      const dot = document.getElementById('realtime-dot');
+      if (!dot) return;
+      if (status === 'SUBSCRIBED') { dot.style.background='var(--green)'; dot.title='Tiempo real activo'; }
+      else { dot.style.background='var(--yellow)'; dot.title='Polling 90s'; }
+    });
+
+  G.pollingTimer = setInterval(() => cargarSilencioso(), 90000);
+}
+
+function procesarRealtime(payload) {
+  const { eventType, new: n, old: o } = payload;
+  if (eventType === 'INSERT' && n && G.vehs[n.vehiculo_id]) {
+    if (!G.partes.find(p=>p.id===n.id)) {
+      G.partes.unshift(n);
+      renderPanel();
+      const mat = (G.vehs[n.vehiculo_id]||{}).matricula||'';
+      toast(`⚡ Nuevo parte — Carro ${mat}`, 'ok');
+    }
+  } else if (eventType === 'UPDATE' && n) {
+    const idx = G.partes.findIndex(p=>p.id===n.id);
+    if (idx !== -1) { G.partes[idx] = {...G.partes[idx],...n}; renderPanel(); }
+    else if (G.vehs[n.vehiculo_id] && !['cerrado','cancelado'].includes(n.estado)) {
+      G.partes.unshift(n); renderPanel();
+    }
+  } else if (eventType === 'DELETE' && o) {
+    G.partes = G.partes.filter(p=>p.id!==o.id); renderPanel();
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  RENDER PANEL
+// ════════════════════════════════════════════════════════════
+function setVista(v, btn) {
+  G.vista = v;
+  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  showPage('panel');
+  renderPanel();
+}
+
+function setFiltro(f, btn) {
+  G.filtroEstado = f;
+  document.querySelectorAll('.filter-all').forEach(b => b.classList.add('inactive'));
+  document.querySelectorAll('.filter-dot').forEach(b => b.classList.add('inactive'));
+  if (f === 'todos') {
+    document.getElementById('f-todos').classList.remove('inactive');
+    document.querySelectorAll('.filter-dot').forEach(b=>b.classList.remove('inactive'));
+  } else {
+    if (btn) btn.classList.remove('inactive');
+  }
+  renderPanel();
+}
+
+function renderPanel() {
+  const lista   = document.getElementById('lista-panel');
+  const ctr     = document.getElementById('contador');
+  const q       = (document.getElementById('buscar')?.value||'').toLowerCase().trim();
+  const repF    = (document.getElementById('f-rep')?.value||'').toLowerCase();
+  const hoy     = new Date().toISOString().split('T')[0];
+
+  let partes = G.partes.slice();
+
+  // Vista
+  if (G.vista === 'hoy') partes = partes.filter(p=>p.created_at.startsWith(hoy));
+  else if (G.vista === 'pendiente') partes = partes.filter(p=>p.estado==='abierto');
+
+  // Filtro estado vehículo
+  if (G.filtroEstado !== 'todos') {
+    const map = {pendiente:'pendiente_revision',leve:'averia_leve',reparando:'en_reparacion',operativo:'operativo'};
+    const target = map[G.filtroEstado];
+    if (G.filtroEstado === 'reparando') {
+      partes = partes.filter(p=>(G.vehs[p.vehiculo_id]||{}).estado==='en_reparacion'||['asignado','en_curso'].includes(p.estado));
+    } else {
+      partes = partes.filter(p=>(G.vehs[p.vehiculo_id]||{}).estado===target);
+    }
+  }
+
+  // Búsqueda
+  if (q) partes = partes.filter(p=>{
+    const v=G.vehs[p.vehiculo_id]||{};
+    return (v.matricula||'').includes(q)||(v.cantones?.nombre||p.canton||'').toLowerCase().includes(q)||(p.titulo||'').toLowerCase().includes(q);
+  });
+
+  // Repuesto
+  if (repF) partes = partes.filter(p=>(p.titulo||'').toLowerCase().includes(repF)||(p.notas_mecanico||'').toLowerCase().includes(repF));
+
+  ctr.textContent = partes.length + ' PARTE' + (partes.length!==1?'S':'');
+
+  if (!partes.length) {
+    lista.innerHTML = `<div class="empty-state"><div class="empty-icon">${G.vista==='hoy'?'☀️':'✅'}</div><div class="empty-txt">${G.vista==='hoy'?'Sin partes hoy':'Sin partes con estos filtros'}</div></div>`;
+    return;
+  }
+
+  lista.innerHTML = partes.map(p => {
+    const v   = G.vehs[p.vehiculo_id]||{};
+    const mat = v.matricula||'???';
+    const can = (v.cantones?.nombre||p.canton||'—').toUpperCase();
+    const bc  = COL_PARTE[p.estado]||'#e05050';
+    const el  = LBL_PARTE[p.estado]||'PENDIENTE';
+    const ec  = COL_PARTE[p.estado]||'#e05050';
+    const fecha = new Date(p.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
+    const tit = (p.titulo||'').toUpperCase().replace(/\|/g,' · ');
+    const chips = TIPOS_AVERIA.filter(t=>(p.titulo||'').toUpperCase().includes(t)).slice(0,5).map(t=>`<span class="chip-tipo">${t}</span>`).join('');
+    const notaOp = p.descripcion ? `<div class="tarjeta-nota">${p.descripcion.length>70?p.descripcion.slice(0,70)+'...':p.descripcion}</div>` : '';
+
+    return `<div class="tarjeta" style="border-left-color:${bc}" onclick="abrirDetalle('${p.id}')">
+      <div class="tarjeta-inner">
+        <div class="tarjeta-num" style="background:${bc}">${mat}</div>
+        <div class="tarjeta-body">
+          <div class="tarjeta-canton">${can}</div>
+          <div class="tarjeta-fecha">${fecha}</div>
+          <div class="tarjeta-averia">${tit}</div>
+          ${notaOp}
+          ${chips?`<div class="tarjeta-chips">${chips}</div>`:''}
+        </div>
+        <div class="tarjeta-estado">
+          <div class="estado-dot" style="background:${ec}"></div>
+          <span class="estado-txt" style="color:${ec}">${el}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════════
+//  NUEVO PARTE
+// ════════════════════════════════════════════════════════════
+function openNuevoParte() {
+  document.getElementById('np-carro-search').value='';
+  document.getElementById('np-carro-id').value='';
+  document.getElementById('np-canton').value='';
+  document.getElementById('np-notas').value='';
+  document.getElementById('np-carro-sel').style.display='none';
+  document.getElementById('carro-dropdown').style.display='none';
+  document.querySelectorAll('#np-tipos .chip-sel').forEach(b=>{b.classList.remove('on');b.style.cssText='';});
+  openModal('modal-nuevo-parte');
+  setTimeout(()=>document.getElementById('np-carro-search')?.focus(),300);
+}
+
+function buscarCarroNuevo(q) {
+  const dd = document.getElementById('carro-dropdown');
+  if (!q.trim()) { dd.style.display='none'; return; }
+  const lista = Object.values(G.vehs).filter(v=>v.matricula.includes(q.trim())||(v.cantones?.nombre||'').toLowerCase().includes(q.toLowerCase())).slice(0,15);
+  if (!lista.length) { dd.style.display='none'; return; }
+  dd.innerHTML = lista.map(v=>`<div class="dropdown-item" onclick="selCarroNuevo('${v.id}')"><span class="dropdown-mat">${v.matricula}</span><span class="dropdown-can">${v.cantones?.nombre||'—'}</span></div>`).join('');
+  dd.style.display='block';
+}
+function selCarroNuevo(id) {
+  const v=G.vehs[id]; if(!v) return;
+  document.getElementById('np-carro-id').value=id;
+  document.getElementById('np-carro-search').value=v.matricula;
+  document.getElementById('np-canton').value=v.cantones?.nombre||'';
+  document.getElementById('carro-dropdown').style.display='none';
+  const sel=document.getElementById('np-carro-sel');
+  sel.textContent=`Nº ${v.matricula}  ·  ${v.cantones?.nombre||'—'}`;
+  sel.style.display='block';
+}
+document.addEventListener('click',e=>{
+  const dd=document.getElementById('carro-dropdown');
+  const inp=document.getElementById('np-carro-search');
+  if(dd&&inp&&!dd.contains(e.target)&&e.target!==inp) dd.style.display='none';
+});
+
+async function guardarNuevoParte() {
+  const carroId=document.getElementById('np-carro-id').value;
+  const canton=document.getElementById('np-canton').value.trim();
+  const notas=document.getElementById('np-notas').value.trim();
+  const tipos=[...document.querySelectorAll('#np-tipos .chip-sel.on')].map(b=>b.textContent);
+  if(!carroId){toast('Selecciona un carro','err');return;}
+  if(!tipos.length){toast('Selecciona al menos un tipo de avería','err');return;}
+
+  const titulo=tipos.join(' | ');
+  const {data:parte,error}=await db.from('partes_averia').insert({
+    vehiculo_id:carroId, abierto_por:G.user.id,
+    titulo, descripcion:notas||null, canton:canton||null,
+    estado:'abierto', fuente:'ecarr',
+  }).select().single();
+
+  if(error){toast('Error: '+error.message,'err');return;}
+  await db.from('vehiculos').update({estado:'pendiente_revision',updated_at:new Date().toISOString()}).eq('id',carroId);
+  toast(`✅ Parte #${parte.numero_parte} creado`,'ok');
+  closeModal('modal-nuevo-parte');
+  await cargar();
+}
+
+// ════════════════════════════════════════════════════════════
+//  DETALLE PARTE
+// ════════════════════════════════════════════════════════════
+async function abrirDetalle(parteId) {
+  let p = G.partes.find(x=>x.id===parteId);
+  if(!p) return;
+
+  // Recargar datos frescos
+  try {
+    const {data:fresco}=await db.from('partes_averia').select('*').eq('id',parteId).single();
+    if(fresco){p=fresco; const idx=G.partes.findIndex(x=>x.id===parteId); if(idx!==-1)G.partes[idx]=fresco;}
+  } catch(e){}
+
+  G.parteActual=p; G.repQty=1;
+  const v=G.vehs[p.vehiculo_id]||{};
+  const fecha=new Date(p.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'});
+
+  setText('det-num',`Parte #${p.numero_parte||'—'}`);
+  setText('det-sub',`${v.matricula||'???'} · ${v.cantones?.nombre||p.canton||'—'}`);
+  setText('det-fecha',fecha);
+  setText('det-carro',`Nº ${v.matricula||'???'}`);
+  setText('det-canton',v.cantones?.nombre||p.canton||'—');
+  document.getElementById('det-notas').value=p.notas_mecanico||'';
+  document.getElementById('det-rep-qty').textContent='1';
+
+  // Averías
+  const tipos=(p.titulo||'').split(/[|·,]/).map(s=>s.trim()).filter(Boolean);
+  document.getElementById('det-averias').innerHTML=tipos.map(t=>`<span class="chip-tipo">${t}</span>`).join('');
+
+  // Descripción operario
+  const dw=document.getElementById('det-desc-wrap');
+  const dd=document.getElementById('det-desc');
+  if(p.descripcion){dd.textContent=p.descripcion;dw.style.display='block';}
+  else dw.style.display='none';
+
+  // Estado botones
+  const ev=v.estado||'pendiente_revision';
+  const cols={pendiente_revision:'#e05050',averia_leve:'#f0c040',en_reparacion:'#f08030',operativo:'#7dc520'};
+  ['pendiente_revision','averia_leve','en_reparacion','operativo'].forEach(e=>{
+    const b=document.getElementById('est-'+e); if(!b)return;
+    const on=e===ev;
+    b.classList.toggle('on',on);
+    b.style.opacity=on?'1':'0.5';
+    b.style.background=on?cols[e]+'22':'var(--bg3)';
+  });
+
+  // Chips diagnóstico
+  const tipoDiagArr=(p.tipo_diag||'').split('|').filter(Boolean).map(s=>s.toLowerCase());
+  document.querySelectorAll('#det-diag .chip-diag').forEach(b=>{
+    const on=tipoDiagArr.includes(b.textContent.toLowerCase());
+    b.classList.toggle('on',on);
+    if(on){b.style.background='rgba(125,197,32,.2)';b.style.borderColor='var(--accent)';b.style.color='var(--accent)';}
+    else{b.style.background='';b.style.borderColor='';b.style.color='';}
+  });
+
+  // Fotos
+  const fotos=p.fotos_reparacion||[];
+  document.getElementById('det-fotos').innerHTML=fotos.map(url=>`<img src="${url}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="lightbox('${url}')">`).join('');
+
+  detTab('parte',document.querySelector('#modal-detalle .det-tab'));
+  openModal('modal-detalle');
+  await cargarRepuestos();
+  cargarHistorial(p.vehiculo_id);
+}
+
+function detTab(tab, btn) {
+  document.getElementById('det-tab-parte').style.display=tab==='parte'?'block':'none';
+  document.getElementById('det-tab-hist').style.display=tab==='hist'?'block':'none';
+  document.querySelectorAll('#modal-detalle .det-tab').forEach(b=>{
+    const isActive=(tab==='parte'&&b.textContent.includes('PARTE'))||(tab==='hist'&&b.textContent.includes('HISTORIAL'));
+    b.classList.toggle('active',isActive);
+  });
+}
+
+async function cambiarEstado(nuevoEstado) {
+  if(!G.parteActual) return;
+  const cols={pendiente_revision:'#e05050',averia_leve:'#f0c040',en_reparacion:'#f08030',operativo:'#7dc520'};
+  await db.from('vehiculos').update({estado:nuevoEstado,updated_at:new Date().toISOString()}).eq('id',G.parteActual.vehiculo_id);
+  if(G.vehs[G.parteActual.vehiculo_id]) G.vehs[G.parteActual.vehiculo_id].estado=nuevoEstado;
+  ['pendiente_revision','averia_leve','en_reparacion','operativo'].forEach(e=>{
+    const b=document.getElementById('est-'+e); if(!b)return;
+    const on=e===nuevoEstado;
+    b.classList.toggle('on',on);
+    b.style.opacity=on?'1':'0.5';
+    b.style.background=on?cols[e]+'22':'var(--bg3)';
+  });
+  if(nuevoEstado==='operativo'){
+    await db.from('partes_averia').update({estado:'cerrado',fecha_cierre_mecanico:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',G.parteActual.id);
+    G.parteActual.estado='cerrado';
+  } else if(nuevoEstado==='en_reparacion' && G.parteActual.estado==='abierto'){
+    await db.from('partes_averia').update({estado:'en_curso',updated_at:new Date().toISOString()}).eq('id',G.parteActual.id);
+    G.parteActual.estado='en_curso';
+  }
+  toast('Estado actualizado','ok');
+  renderPanel();
+}
+
+async function cargarRepuestos() {
+  const p=G.parteActual; if(!p) return;
+  const {data}=await db.from('repuestos_parte').select('*,repuestos(nombre)').eq('parte_id',p.id);
+  const el=document.getElementById('det-reps');
+  if(!data?.length){el.innerHTML='<span style="font-size:12px;color:var(--text3);font-style:italic">Sin repuestos añadidos</span>';return;}
+  el.innerHTML=data.map(r=>`<div class="rep-row"><span class="rep-nombre">🔩 ${r.nombre_libre||r.repuestos?.nombre||'—'}</span><span class="rep-cant">×${r.cantidad}</span></div>`).join('');
+}
+
+function repQty(d) {
+  G.repQty=Math.max(1,(G.repQty||1)+d);
+  setText('det-rep-qty',G.repQty);
+}
+
+async function añadirRep() {
+  const nombre=document.getElementById('det-rep-sel').value;
+  if(!nombre){toast('Selecciona un repuesto','err');return;}
+  const p=G.parteActual; if(!p){toast('Sin parte activo','err');return;}
+  try{
+    const {data:rep}=await db.from('repuestos').select('id,nombre,stock_actual,stock_minimo').ilike('nombre','%'+nombre+'%').limit(1).maybeSingle();
+    const {error}=await db.from('repuestos_parte').insert({parte_id:p.id,repuesto_id:rep?.id||null,nombre_libre:rep?null:nombre,cantidad:G.repQty});
+    if(error) throw error;
+    if(rep){const ns=Math.max(0,(rep.stock_actual||0)-G.repQty);await db.from('repuestos').update({stock_actual:ns,updated_at:new Date().toISOString()}).eq('id',rep.id);}
+    toast(nombre+' ×'+G.repQty+' añadido','ok');
+    await cargarRepuestos();
+    document.getElementById('det-rep-sel').value='';
+    G.repQty=1; setText('det-rep-qty','1');
+  }catch(e){toast('Error: '+(e.message||e),'err');}
+}
+
+async function guardarDetalle() {
+  const p=G.parteActual; if(!p) return;
+  const notas=document.getElementById('det-notas').value.trim();
+  const diags=[...document.querySelectorAll('#det-diag .chip-diag.on')].map(b=>b.textContent);
+  const nuevoEstado=p.estado==='abierto'?'en_curso':p.estado;
+  await db.from('partes_averia').update({notas_mecanico:notas||null,tipo_diag:diags.length?diags.join('|'):null,estado:nuevoEstado,updated_at:new Date().toISOString()}).eq('id',p.id);
+  toast('Guardado','ok');
+  await cargar();
+}
+
+async function subirFotos(input) {
+  const files=Array.from(input.files);
+  const p=G.parteActual; if(!p) return;
+  const grid=document.getElementById('det-fotos');
+  for(const file of files){
+    const ruta=`ecarr/partes/${p.id}/${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
+    const {error}=await db.storage.from('gmao-files').upload(ruta,file,{upsert:false});
+    if(error){toast('Error foto','err');continue;}
+    const {data}=db.storage.from('gmao-files').getPublicUrl(ruta);
+    const actual=p.fotos_reparacion||[];
+    actual.push(data.publicUrl);
+    await db.from('partes_averia').update({fotos_reparacion:actual}).eq('id',p.id);
+    p.fotos_reparacion=actual;
+    grid.innerHTML+=`<img src="${data.publicUrl}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="lightbox('${data.publicUrl}')">`;
+  }
+  input.value='';
+}
+
+function lightbox(url) {
+  const w=window.open('','_blank'); if(w) w.document.write(`<html><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="${url}" style="max-width:100%;max-height:100vh"></body></html>`);
+}
+
+async function eliminarParte() {
+  if(!G.parteActual||!confirm('¿Eliminar este parte?')) return;
+  await db.from('partes_averia').update({estado:'cancelado',updated_at:new Date().toISOString()}).eq('id',G.parteActual.id);
+  toast('Parte eliminado','ok');
+  closeModal('modal-detalle');
+  await cargar();
+}
+
+async function cargarHistorial(vehiculoId) {
+  const el=document.getElementById('det-hist');
+  el.innerHTML='<div class="loading-wrap"><div class="spinner"></div></div>';
+  const {data}=await db.from('partes_averia').select('id,numero_parte,titulo,estado,created_at,notas_mecanico,tipo_diag,fotos_reparacion,descripcion').eq('vehiculo_id',vehiculoId).order('created_at',{ascending:false}).limit(50);
+  const ids=(data||[]).map(p=>p.id);
+  let repMap={};
+  if(ids.length){
+    const {data:reps}=await db.from('repuestos_parte').select('parte_id,nombre_libre,cantidad,repuestos(nombre)').in('parte_id',ids);
+    (reps||[]).forEach(r=>{if(!repMap[r.parte_id])repMap[r.parte_id]=[];repMap[r.parte_id].push(r);});
+  }
+  if(!data?.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text3)">Sin historial</div>';return;}
+  const colHist={cerrado:'#7dc520',abierto:'#e05050',en_curso:'#f08030',cerrado_pendiente:'#f0c040',cancelado:'#3a7080'};
+  const lblHist={cerrado:'Arreglado',abierto:'Pendiente',en_curso:'Reparando',cerrado_pendiente:'Validar',cancelado:'Cancelado'};
+  el.innerHTML=data.map(p=>{
+    const fecha=new Date(p.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const col=colHist[p.estado]||'#7ab0b8';
+    const lbl=lblHist[p.estado]||p.estado;
+    const reps=repMap[p.id]||[];
+    const diags=(p.tipo_diag||'').split('|').filter(Boolean);
+    const fotos=p.fotos_reparacion||[];
+    return `<div class="hist-entry" style="border-left-color:${col}">
+      <div class="hist-header"><span class="hist-fecha">${fecha}</span><span class="hist-estado" style="color:${col}">${lbl.toUpperCase()}</span></div>
+      <div class="hist-averia">${(p.titulo||'').replace(/\|/g,' · ')}</div>
+      ${p.descripcion?`<div class="hist-nota-op">📝 ${p.descripcion}</div>`:''}
+      ${diags.length?`<div class="hist-chips">${diags.map(t=>`<span class="hist-chip-diag">${t}</span>`).join('')}</div>`:''}
+      ${p.notas_mecanico?`<div class="hist-notas-mec">🔧 ${p.notas_mecanico}</div>`:''}
+      ${reps.length?`<div class="hist-reps">${reps.map(r=>`<span class="hist-chip-rep">🔩 ${r.nombre_libre||r.repuestos?.nombre||'—'} ×${r.cantidad}</span>`).join('')}</div>`:''}
+      ${fotos.length?`<div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">${fotos.map(url=>`<img src="${url}" style="width:48px;height:48px;object-fit:cover;border-radius:4px;border:1px solid var(--border);cursor:pointer" onclick="lightbox('${url}')">`).join('')}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════════
+//  BLINK
+// ════════════════════════════════════════════════════════════
+function renderBlink(q) {
+  const ql=q.toLowerCase();
+  const lista=BLINK_CODES.filter(b=>!ql||b.c.includes(ql)||b.d.toLowerCase().includes(ql)||b.s.toLowerCase().includes(ql));
+  const el=document.getElementById('lista-blink');
+  el.innerHTML=lista.map(b=>`<div class="blink-card"><div class="blink-code">${b.c}</div><div class="blink-desc">${b.d}</div><div class="blink-sol">🔧 ${b.s}</div></div>`).join('')||'<div style="padding:24px;text-align:center;color:var(--text3)">Sin resultados</div>';
+}
+
+// ════════════════════════════════════════════════════════════
+//  ALMACÉN
+// ════════════════════════════════════════════════════════════
+async function loadAlmacen() {
+  if(G.almacen.length) return;
+  const mid=await getModeloId();
+  const {data:cats}=await db.from('categorias_repuesto').select('id').eq('modelo_id',mid);
+  const catIds=new Set((cats||[]).map(c=>c.id));
+  const {data}=await db.from('repuestos').select('*,categorias_repuesto(nombre)').eq('activo',true).order('nombre');
+  G.almacen=(data||[]).filter(r=>!r.categoria_id||catIds.has(r.categoria_id));
+  renderAlmacen('');
+}
+function renderAlmacen(q) {
+  const ql=q.toLowerCase();
+  const lista=G.almacen.filter(r=>!ql||r.nombre.toLowerCase().includes(ql));
+  const el=document.getElementById('lista-almacen');
+  if(!el) return;
+  if(!lista.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text3)">Sin repuestos</div>';return;}
+  const agotCol=r=>{if((r.stock_actual||0)<=0)return'#e05050';if((r.stock_actual||0)<=(r.stock_minimo||1))return'#f0c040';return'#7dc520';};
+  el.innerHTML=lista.map(r=>`<div class="alm-row"><div><div class="alm-nombre">${r.nombre}</div><div class="alm-ubi">${r.ubicacion_almacen||'—'}</div></div><div style="text-align:right"><div class="alm-stock" style="color:${agotCol(r)}">${r.stock_actual||0}</div><div class="alm-unit">${r.unidad||'ud'}</div></div></div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════════
+//  VISTA CARROS
+// ════════════════════════════════════════════════════════════
+function renderCarros(q='') {
+  const ql=q.toLowerCase();
+  let vehs=Object.values(G.vehs);
+  if(ql) vehs=vehs.filter(v=>v.matricula.includes(ql)||(v.cantones?.nombre||'').toLowerCase().includes(ql));
+  vehs.sort((a,b)=>{
+    const ord={pendiente_revision:0,en_reparacion:1,averia_leve:2,operativo:3};
+    const da=ord[a.estado]??4,db_=ord[b.estado]??4;
+    if(da!==db_)return da-db_;
+    return parseInt(a.matricula)-parseInt(b.matricula);
+  });
+  const cols={pendiente_revision:'#e05050',averia_leve:'#f0c040',en_reparacion:'#f08030',operativo:'#7dc520'};
+  const lbls={pendiente_revision:'PENDIENTE',averia_leve:'LEVE',en_reparacion:'REPARANDO',operativo:'OPERATIVO'};
+  const el=document.getElementById('grid-carros');
+  if(!el) return;
+  el.innerHTML=vehs.map(v=>{
+    const col=cols[v.estado]||'#7dc520';
+    const lbl=lbls[v.estado]||'—';
+    const pa=G.partes.find(p=>p.vehiculo_id===v.id&&!['cerrado','cancelado'].includes(p.estado));
+    return `<div class="carro-card" style="border-color:${col}44;border-top-color:${col}" onclick="carroClick('${v.id}')">
+      <div class="carro-mat" style="color:${col}">${v.matricula}</div>
+      <div class="carro-canton">${(v.cantones?.nombre||'—').toUpperCase()}</div>
+      <div class="carro-est" style="color:${col}">${lbl}</div>
+      ${pa?`<div class="carro-averia">${(pa.titulo||'').replace(/\|/g,'·').slice(0,28)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function carroClick(vId) {
+  const pa=G.partes.find(p=>p.vehiculo_id===vId&&!['cerrado','cancelado'].includes(p.estado));
+  if(pa) abrirDetalle(pa.id);
+  else toast('Sin partes activos','ok');
+}
+
+// ════════════════════════════════════════════════════════════
+//  PENDIENTES
+// ════════════════════════════════════════════════════════════
+async function loadPendientes() {
+  const el=document.getElementById('lista-pendientes');
+  el.innerHTML='<div class="loading-wrap"><div class="spinner"></div></div>';
+  const {data}=await db.from('recordatorios_usuario').select('*').eq('usuario_id',G.user.id).eq('completado',false).order('created_at',{ascending:false}).catch(()=>({data:[]}));
+  G.pendientesData=data||[];
+  renderPendientes();
+}
+function renderPendientes() {
+  const el=document.getElementById('lista-pendientes');
+  if(!el) return;
+  if(!G.pendientesData.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-txt">Sin pendientes — todo al día</div></div>';return;}
+  const fecha=d=>new Date(d).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'});
+  el.innerHTML=G.pendientesData.map(p=>`<div class="pend-row">
+    <button class="pend-check" onclick="completarPendiente('${p.id}')"></button>
+    <div class="pend-body">
+      ${p.carro?`<div class="pend-carro">Carro ${p.carro}</div>`:''}
+      <div class="pend-txt">${p.contenido||''}</div>
+      <div class="pend-fecha">${fecha(p.created_at)}</div>
+    </div>
+    <button class="pend-del" onclick="eliminarPendiente('${p.id}')">✕</button>
+  </div>`).join('');
+}
+function openNuevoPendiente(){document.getElementById('pend-carro').value='';document.getElementById('pend-texto').value='';openModal('modal-nuevo-pend');}
+async function guardarPendiente(){
+  const carro=document.getElementById('pend-carro').value.trim();
+  const texto=document.getElementById('pend-texto').value.trim();
+  if(!texto){toast('Escribe la tarea','err');return;}
+  await db.from('recordatorios_usuario').insert({usuario_id:G.user.id,contenido:texto,carro:carro||null,completado:false}).catch(()=>{});
+  toast('Pendiente añadido','ok');
+  closeModal('modal-nuevo-pend');
+  await loadPendientes();
+}
+async function completarPendiente(id){
+  await db.from('recordatorios_usuario').update({completado:true}).eq('id',id).catch(()=>{});
+  G.pendientesData=G.pendientesData.filter(p=>p.id!==id);
+  renderPendientes();
+  toast('✅ Completado','ok');
+}
+async function eliminarPendiente(id){
+  if(!confirm('¿Eliminar?'))return;
+  await db.from('recordatorios_usuario').delete().eq('id',id).catch(()=>{});
+  G.pendientesData=G.pendientesData.filter(p=>p.id!==id);
+  renderPendientes();
+}
+
+// ════════════════════════════════════════════════════════════
+//  TABLÓN
+// ════════════════════════════════════════════════════════════
+async function loadTablon() {
+  const el=document.getElementById('lista-tablon');
+  el.innerHTML='<div class="loading-wrap"><div class="spinner"></div></div>';
+  const vIds=Object.keys(G.vehs);
+  const dummy='00000000-0000-0000-0000-000000000000';
+  const [resD,resP]=await Promise.all([
+    db.from('diario_taller').select('id,contenido,fecha,created_at,usuarios(nombre)').order('created_at',{ascending:false}).limit(30),
+    db.from('partes_averia').select('id,numero_parte,titulo,descripcion,canton,created_at,vehiculo_id').in('vehiculo_id',vIds.length?vIds:[dummy]).not('descripcion','is',null).not('estado','in','("cerrado","cancelado")').order('created_at',{ascending:false}).limit(20)
+  ]);
+  G.tablonDatos=[
+    ...(resD.data||[]).map(d=>({tipo:'mecanico',id:d.id,titulo:(d.contenido||'').split('\n')[0].replace('⚡','').trim(),mensaje:(d.contenido||'').split('\n').slice(1).join('\n').trim(),autor:d.usuarios?.nombre||'Mecánico',fecha:d.created_at,carro:(d.contenido||'').match(/Carro (\d+)/)?.[1]||''})),
+    ...(resP.data||[]).map(p=>({tipo:'operario',id:p.id,titulo:(p.titulo||'').replace(/\|/g,' · '),mensaje:p.descripcion||'',autor:'Operario',fecha:p.created_at,carro:(G.vehs[p.vehiculo_id]||{}).matricula||'',canton:p.canton||''}))
+  ].sort((a,b)=>new Date(b.fecha)-new Date(a.fecha));
+  renderTablon();
+}
+function setTablonFiltro(f,btn){
+  G.tablonFiltro=f;
+  document.querySelectorAll('.filter-all').forEach(b=>b.classList.add('inactive'));
+  const tf={todos:'tf-todos',mecanico:'tf-mecanico',operario:'tf-operario'};
+  document.getElementById(tf[f])?.classList.remove('inactive');
+  renderTablon();
+}
+function renderTablon(){
+  const el=document.getElementById('lista-tablon');
+  let datos=G.tablonDatos;
+  if(G.tablonFiltro!=='todos') datos=datos.filter(d=>d.tipo===G.tablonFiltro);
+  if(!datos.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">📢</div><div class="empty-txt">Sin notas en el tablón</div></div>';return;}
+  const col={mecanico:'var(--green)',operario:'var(--orange)'};
+  const ic={mecanico:'🔧',operario:'👷'};
+  el.innerHTML=datos.map(d=>{
+    const fecha=new Date(d.fecha).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    const c=col[d.tipo]||'var(--text2)';
+    return `<div class="tablon-entry" style="border-left-color:${c}">
+      <div class="tablon-header">
+        ${d.carro?`<span class="tablon-num" style="color:${c};background:${c}22">${d.carro}</span>`:''}
+        ${d.canton?`<span class="tablon-canton">${d.canton}</span>`:''}
+        <span class="tablon-fecha">${fecha}</span>
+      </div>
+      <div class="tablon-titulo">${ic[d.tipo]||''} ${d.titulo}</div>
+      ${d.mensaje&&d.mensaje!==d.titulo?`<div class="tablon-msg">${d.mensaje}</div>`:''}
+      <div class="tablon-autor">${d.autor}</div>
+    </div>`;
+  }).join('');
+}
+function openNuevaNotaTablon(){document.getElementById('tabl-carro').value='';document.getElementById('tabl-titulo').value='';document.getElementById('tabl-msg').value='';openModal('modal-nuevo-tablon');}
+async function guardarTablon(){
+  const carro=document.getElementById('tabl-carro').value.trim();
+  const titulo=document.getElementById('tabl-titulo').value.trim();
+  const msg=document.getElementById('tabl-msg').value.trim();
+  if(!titulo&&!msg){toast('Escribe algo','err');return;}
+  const contenido=`⚡ ${carro?'Carro '+carro+' — ':''}${titulo||msg}${msg&&titulo?'\n'+msg:''}`;
+  await db.from('diario_taller').insert({contenido,fecha:new Date().toISOString().split('T')[0],autor_id:G.user.id}).catch(()=>{});
+  toast('Nota añadida','ok');
+  closeModal('modal-nuevo-tablon');
+  await loadTablon();
+}
+
+// Nota tablón desde detalle
+function openNotaTablon(){
+  if(!G.parteActual)return;
+  const v=G.vehs[G.parteActual.vehiculo_id]||{};
+  document.getElementById('tabl-carro').value=v.matricula||'';
+  document.getElementById('tabl-titulo').value='';
+  document.getElementById('tabl-msg').value='';
+  closeModal('modal-detalle');
+  openModal('modal-nuevo-tablon');
+}
+
+// Nota pendiente desde detalle
+function openNotaPendiente(){
+  if(!G.parteActual)return;
+  const v=G.vehs[G.parteActual.vehiculo_id]||{};
+  document.getElementById('pend-carro').value=v.matricula||'';
+  document.getElementById('pend-texto').value='';
+  closeModal('modal-detalle');
+  openModal('modal-nuevo-pend');
+}
+
+// ════════════════════════════════════════════════════════════
+//  NAVEGACIÓN
+// ════════════════════════════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('page-'+name);
+  if(pg) pg.classList.add('active');
+  const statsWrap=document.getElementById('stats-wrap');
+  if(statsWrap) statsWrap.style.display=(name==='panel')?'block':'none';
+
+  // Cargar datos de la página
+  if(name==='almacen') loadAlmacen();
+  if(name==='carros') renderCarros('');
+  if(name==='pendientes') loadPendientes();
+  if(name==='tablon') loadTablon();
+  if(name==='blink') renderBlink(document.querySelector('#page-blink input')?.value||'');
+}
+
+// ════════════════════════════════════════════════════════════
+//  UTILIDADES
+// ════════════════════════════════════════════════════════════
+function openModal(id){document.getElementById(id)?.classList.add('open');}
+function closeModal(id){document.getElementById(id)?.classList.remove('open');}
+function setText(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function chipToggle(btn){
+  const on=!btn.classList.contains('on');
+  btn.classList.toggle('on',on);
+  if(on){btn.style.background='rgba(125,197,32,.2)';btn.style.borderColor='var(--accent)';btn.style.color='var(--accent)';}
+  else{btn.style.background='';btn.style.borderColor='';btn.style.color='';}
+}
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=''; t.classList.add('show',type);
+  clearTimeout(t._timer); t._timer=setTimeout(()=>t.className='',2600);
+}
+function mostrarLoadingPanel(){
+  const el=document.getElementById('lista-panel');
+  if(el) el.innerHTML='<div class="loading-wrap"><div class="spinner"></div></div>';
+}
+function mostrarError(msg){
+  const el=document.getElementById('lista-panel');
+  if(el) el.innerHTML=`<div style="padding:24px;color:var(--red);font-size:13px">⚠️ ${msg}</div>`;
+}
+
+// Cerrar modales al click en overlay
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
+});
+
+// Acceso rápido para desarrollo (quitar en producción)
+// quickAccess();
+</script>
+</body>
+</html>
