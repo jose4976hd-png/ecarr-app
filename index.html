@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>⚡ Ecarr — PreZero Madrid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#071520;--bg2:#0a1f2a;--bg3:#0d3040;--bg4:#133a4a;--border:#1a4f62;--border2:#206070;--accent:#7dc520;--text:#d8eef0;--text2:#7ab0b8;--text3:#3a7080;--red:#e05050;--orange:#f08030;--yellow:#f0c040;--green:#7dc520}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;height:100%;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh}
+#hdr{background:var(--bg2);border-bottom:2px solid var(--border);padding:10px 14px;flex-shrink:0;z-index:100}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.logo-txt{font-size:20px;font-weight:700;color:var(--accent);letter-spacing:2px}
+.logo-sub{font-size:8px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
+.nav-sc{display:flex;gap:5px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;scrollbar-width:none;margin-bottom:10px}
+.nav-sc::-webkit-scrollbar{display:none}
+.ntab{flex-shrink:0;padding:6px 14px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.ntab.on{background:var(--accent);color:#000;border-color:var(--accent)}
+.ntab.gr{border-color:rgba(125,197,32,.4);color:var(--accent)}
+.sbar2{display:grid;grid-template-columns:repeat(5,1fr);background:var(--bg3);border-radius:8px;border:1px solid var(--border);overflow:hidden;margin-bottom:10px}
+.sc{padding:7px 4px;text-align:center;border-right:1px solid var(--border)}
+.sc:last-child{border-right:none}
+.sn{font-size:20px;font-weight:700;line-height:1.1}
+.sl{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+.sr{display:flex;gap:8px;margin-bottom:8px}
+.si{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;outline:none}
+.si::placeholder{color:var(--text3)}
+.ib{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--text2);cursor:pointer;font-size:16px}
+.fd{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fa{padding:4px 12px;border-radius:20px;border:1px solid var(--accent);background:var(--accent);color:#000;font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;cursor:pointer}
+.fa.off{background:var(--bg3);color:var(--text2);border-color:var(--border)}
+.fdot{width:26px;height:26px;border-radius:50%;border:2px solid;cursor:pointer}
+.fdot.off{opacity:.35}
+.frp{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:4px 10px;color:var(--text2);font-family:'Rajdhani',sans-serif;font-size:11px;cursor:pointer;outline:none;-webkit-appearance:none}
+#main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.pg{display:none;padding:0 10px 90px}
+.pg.on{display:block}
+.ctr{padding:8px 4px 4px;font-size:11px;font-weight:700;color:var(--text3);letter-spacing:1px}
+.tc{background:var(--bg3);border:1px solid var(--border);border-left:4px solid;border-radius:10px;margin-bottom:10px;padding:13px;cursor:pointer}
+.tc:active{opacity:.8}
+.ti{display:flex;align-items:flex-start;gap:11px}
+.tn{min-width:50px;height:50px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#fff;flex-shrink:0}
+.tb2{flex:1;min-width:0}
+.tca{font-size:15px;font-weight:700;color:var(--text)}
+.tf2{font-size:11px;color:var(--text3);margin-bottom:4px}
+.ta{font-size:13px;font-weight:600;color:var(--accent);line-height:1.3;margin-bottom:5px}
+.tno{font-size:11px;color:var(--text2);font-style:italic;margin-bottom:5px;line-height:1.3}
+.tch{display:flex;flex-wrap:wrap;gap:4px}
+.ct{background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--text2)}
+.tew{display:flex;align-items:center;gap:4px;background:rgba(0,0,0,.4);border-radius:20px;padding:4px 9px;flex-shrink:0;align-self:flex-start}
+.edo{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.et{font-size:10px;font-weight:700}
+.emp{text-align:center;padding:48px 20px;color:var(--text3)}
+.emp-i{font-size:40px;margin-bottom:12px}
+.emp-t{font-size:14px;color:var(--text2)}
+.sp{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ldg{display:flex;align-items:center;justify-content:center;gap:10px;padding:48px;color:var(--text3)}
+.bp{background:var(--accent);color:#000;border:none;border-radius:8px;padding:8px 18px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.5px}
+.bf{width:100%;padding:14px;font-size:16px}
+.bd{background:rgba(224,80,80,.1);border:1px solid rgba(224,80,80,.3);color:var(--red);border-radius:8px;padding:10px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;cursor:pointer;width:100%}
+.bt{background:rgba(240,128,48,.08);border:1px solid rgba(240,128,48,.3);color:var(--orange);border-radius:8px;padding:10px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;cursor:pointer;width:100%;margin-bottom:8px}
+.bn{width:100%;background:rgba(125,197,32,.08);border:1px solid rgba(125,197,32,.3);border-radius:8px;padding:10px;color:var(--accent);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px}
+.mov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:flex-end;justify-content:center}
+.mov.on{display:flex}
+.mpan{background:var(--bg2);border-radius:16px 16px 0 0;width:min(640px,100vw);max-height:92vh;display:flex;flex-direction:column;animation:slu .25s ease}
+@keyframes slu{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mhdr{background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:10px;flex-shrink:0;border-radius:16px 16px 0 0}
+.mt{font-size:16px;font-weight:700;color:var(--accent);flex:1}
+.mbod{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px;background:var(--bg2)}
+.mc{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:2px 6px}
+.fl{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;display:block}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:16px;outline:none;margin-bottom:12px}
+.fi::placeholder{color:var(--text3)}
+.fse{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'Rajdhani',sans-serif;font-size:15px;outline:none;margin-bottom:12px;-webkit-appearance:none;cursor:pointer}
+.cw{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.cc,.dc{padding:6px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.cc.on,.dc.on{background:rgba(125,197,32,.2)!important;border-color:var(--accent)!important;color:var(--accent)!important}
+.eg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+.eb{padding:8px 4px;border-radius:8px;border:1.5px solid;background:var(--bg3);font-family:'Rajdhani',sans-serif;font-size:9px;font-weight:700;cursor:pointer;opacity:.5;letter-spacing:.3px}
+.eb.on{opacity:1!important}
+.ig{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:14px;background:var(--bg3)}
+.ic{padding:8px 10px;background:var(--bg3)}
+.il{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.iv{font-size:13px;font-weight:600;color:var(--text)}
+.dt{display:flex;gap:4px}
+.dtb{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;cursor:pointer}
+.dtb.on{background:var(--accent);color:#000;border-color:var(--accent)}
+.rr{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bg4)}
+.rn{font-size:13px;color:var(--text)}
+.rc{display:flex;gap:8px;align-items:center}
+.qb{background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:30px;height:32px;color:var(--text);cursor:pointer;font-size:16px}
+.qn{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;min-width:22px;text-align:center;color:var(--text)}
+.ba{background:var(--accent);border:none;border-radius:7px;padding:7px 12px;color:#000;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;cursor:pointer}
+.he{padding:11px;margin-bottom:7px;background:var(--bg3);border-radius:8px;border-left:3px solid}
+.hh{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.hfe{font-size:11px;color:var(--text3)}
+.hes{font-size:10px;font-weight:700;margin-left:auto}
+.hav{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:3px}
+.hno{font-size:12px;color:var(--text2);font-style:italic;margin-bottom:3px;line-height:1.4}
+.hm{font-size:12px;color:var(--text2);line-height:1.4;margin-bottom:3px}
+.hch{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:4px}
+.hcd{background:rgba(125,197,32,.1);border:1px solid rgba(125,197,32,.3);border-radius:4px;padding:1px 6px;font-size:10px;font-weight:600;color:var(--accent)}
+.hr2{display:flex;flex-wrap:wrap;gap:3px}
+.hcr{background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-size:10px;color:var(--text2)}
+.bc{padding:12px;background:var(--bg3);border-radius:8px;border:1px solid var(--border);margin-bottom:8px}
+.bco{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--accent);background:rgba(125,197,32,.1);border:1px solid rgba(125,197,32,.3);border-radius:6px;padding:2px 10px;margin-bottom:6px}
+.bde{font-size:13px;font-weight:600;color:var(--text);margin-bottom:5px}
+.bso{font-size:12px;color:var(--text2);line-height:1.5}
+.ar{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bg4)}
+.an{font-size:13px;font-weight:600;color:var(--text);flex:1}
+.au{font-size:11px;color:var(--text3)}
+.as2{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700}
+.au2{font-size:10px;color:var(--text3)}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;padding:8px 0 80px}
+.ca{background:var(--bg3);border:1px solid;border-top-width:3px;border-radius:9px;padding:10px;text-align:center;cursor:pointer}
+.cm2{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;line-height:1}
+.cc2{font-size:10px;color:var(--text3);margin:3px 0}
+.ce{font-size:9px;font-weight:700;letter-spacing:.5px}
+.cv{font-size:10px;color:var(--accent);margin-top:4px;line-height:1.2}
+.pr{display:flex;align-items:flex-start;gap:10px;padding:11px;background:var(--bg3);border-left:3px solid var(--yellow);border-radius:8px;margin-bottom:8px}
+.pc{width:22px;height:22px;border-radius:50%;border:2px solid var(--yellow);background:transparent;cursor:pointer;flex-shrink:0;margin-top:2px}
+.pb{flex:1;min-width:0}
+.pca{font-size:13px;font-weight:700;color:var(--accent)}
+.pt{font-size:14px;color:var(--text);line-height:1.4}
+.pfe{font-size:10px;color:var(--text3);margin-top:3px}
+.pd{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;flex-shrink:0}
+.te{background:var(--bg3);border:1px solid var(--border);border-left:3px solid;border-radius:8px;padding:12px;margin-bottom:10px}
+.th{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.tnl{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;border-radius:6px;padding:1px 8px}
+.tct{font-size:11px;color:var(--text3)}
+.tft{font-size:10px;color:var(--text3);margin-left:auto}
+.tt{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.tm{font-size:13px;color:var(--text2);line-height:1.4}
+.tau{font-size:10px;color:var(--text3);margin-top:6px}
+#cdrop{position:absolute;top:100%;left:0;right:0;z-index:300;background:var(--bg3);border:1px solid var(--border2);border-radius:0 0 8px 8px;max-height:200px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.di{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--bg4);display:flex;align-items:center;gap:12px}
+.di:hover{background:var(--bg4)}
+.dm{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--accent)}
+.dc2{font-size:12px;color:var(--text2)}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:1000;display:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+#toast.on{display:block;animation:fio 2.5s forwards}
+#toast.ok{border-color:var(--green);color:var(--green)}
+#toast.err{border-color:var(--red);color:var(--red)}
+@keyframes fio{0%{opacity:0;transform:translateX(-50%) translateY(8px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}75%{opacity:1}100%{opacity:0}}
+#rtd{width:7px;height:7px;border-radius:50%;background:var(--yellow);display:inline-block;margin-left:6px;vertical-align:middle;transition:background .5s}
+@media(min-width:600px){.mov{align-items:center}.mpan{border-radius:14px;max-height:85vh}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="hdr">
+  <div class="hdr-top">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="font-size:22px">⚡</span>
+      <div><div class="logo-txt">ECARR <span id="rtd"></span></div><div class="logo-sub">GESTIÓN DE REPARACIONES</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span id="uname" style="font-size:12px;color:var(--accent)">José</span>
+      <button class="bp" onclick="openNP()">+ PARTE</button>
+    </div>
+  </div>
+  <div class="nav-sc">
+    <button class="ntab on" id="tab-hoy" onclick="setV('hoy',this)">📅 HOY</button>
+    <button class="ntab" id="tab-pend" onclick="setV('pend',this)">📋 PENDIENTE</button>
+    <button class="ntab" id="tab-todos" onclick="setV('todos',this)">📊 TODOS</button>
+    <button class="ntab gr" onclick="nav('blink')">⚡ BLINK</button>
+    <button class="ntab" onclick="nav('alm')">🔩 ALMACÉN</button>
+    <button class="ntab" onclick="nav('carros')">🚗 CARROS</button>
+    <button class="ntab" onclick="nav('pends')">📋 PENDIENTES</button>
+    <button class="ntab" onclick="nav('tablon')">📢 TABLÓN</button>
+    <button class="ntab" onclick="window.open('https://script.google.com/macros/s/AKfycbzESKFRjU_j5V1ltvr-l1QzgFCL61D0fDQ12x5agVbZRWnulbhhUkP2LOzZRMS9gRym/exec?page=tecnico','_blank')">⚡ ESQUEMA</button>
+    <button class="ntab" onclick="window.open('https://script.google.com/macros/s/AKfycbzESKFRjU_j5V1ltvr-l1QzgFCL61D0fDQ12x5agVbZRWnulbhhUkP2LOzZRMS9gRym/exec?page=despiece','_blank')">🔩 DESPIECE</button>
+  </div>
+  <div id="sb">
+    <div class="sbar2">
+      <div class="sc"><div class="sn" id="s0" style="color:var(--text)">—</div><div class="sl">TOTAL</div></div>
+      <div class="sc"><div class="sn" id="s1" style="color:var(--red)">—</div><div class="sl">PENDIENTE</div></div>
+      <div class="sc"><div class="sn" id="s2" style="color:var(--yellow)">—</div><div class="sl">LEVE</div></div>
+      <div class="sc"><div class="sn" id="s3" style="color:var(--orange)">—</div><div class="sl">REPARANDO</div></div>
+      <div class="sc"><div class="sn" id="s4" style="color:var(--green)">—</div><div class="sl">OPERATIVO</div></div>
+    </div>
+    <div class="sr">
+      <input type="text" id="q" class="si" placeholder="Buscar carro, cantón..." oninput="rp()">
+      <button class="ib" onclick="load()">↻</button>
+    </div>
+    <div class="fd">
+      <button class="fa" id="ft" onclick="setF('todos',this)">TODOS</button>
+      <div class="fdot" style="background:var(--red);border-color:var(--red)" onclick="setF('pendiente',this)"></div>
+      <div class="fdot" style="background:var(--yellow);border-color:var(--yellow)" onclick="setF('leve',this)"></div>
+      <div class="fdot" style="background:var(--orange);border-color:var(--orange)" onclick="setF('reparando',this)"></div>
+      <div class="fdot" style="background:var(--green);border-color:var(--green)" onclick="setF('operativo',this)"></div>
+      <select class="frp" id="fr" onchange="rp()">
+        <option value="">🔩 Todos</option>
+        <option>Muelle</option><option>Relé</option><option>Micro</option><option>Potenciómetro</option>
+        <option>LCD</option><option>Soportes motor</option><option>Cable cargador</option>
+        <option>Cargador</option><option>Batería</option><option>Motor</option>
+        <option>Freno motor</option><option>Rueda</option><option>Chasis</option><option>Rotativo</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div id="main">
+  <div class="pg on" id="pg-panel"><div class="ctr" id="ctr"></div><div id="lp"></div></div>
+  <div class="pg" id="pg-blink"><input type="text" class="si" style="margin:10px 0" placeholder="Buscar código..." oninput="rBlink(this.value)"><div id="lbk"></div></div>
+  <div class="pg" id="pg-alm"><input type="text" class="si" style="margin:10px 0" placeholder="Buscar repuesto..." oninput="rAlm(this.value)"><div id="lalm"></div></div>
+  <div class="pg" id="pg-carros"><input type="text" class="si" style="margin:10px 0" placeholder="Buscar carro o cantón..." oninput="rCarros(this.value)"><div class="cg" id="gca"></div></div>
+  <div class="pg" id="pg-pends"><div style="padding:8px 0 10px;display:flex;justify-content:flex-end"><button class="bp" onclick="openNPe()">+ AÑADIR</button></div><div id="lpe"></div></div>
+  <div class="pg" id="pg-tablon">
+    <div style="padding:8px 0 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="fa" id="tft" onclick="setTF('todos',this)">TODOS</button>
+      <button class="fa off" id="tfm" onclick="setTF('mecanico',this)">🔧 MECÁNICO</button>
+      <button class="fa off" id="tfo" onclick="setTF('operario',this)">👷 OPERARIO</button>
+      <button class="bp" style="margin-left:auto" onclick="openNT()">+ NOTA</button>
+    </div>
+    <div id="ltab"></div>
+  </div>
+</div>
+</div>
+<div id="toast"></div>
+
+<!-- MODAL NUEVO PARTE -->
+<div class="mov" id="m-np">
+  <div class="mpan">
+    <div class="mhdr"><button class="mc" onclick="cm('m-np')">✕</button><div class="mt">Nuevo parte</div></div>
+    <div class="mbod">
+      <span class="fl">CARRO Nº *</span>
+      <div style="position:relative;margin-bottom:12px">
+        <input type="text" id="np-s" class="fi" style="margin:0" placeholder="Número del carro (203–317)..." oninput="buscarC(this.value)" autocomplete="off" inputmode="numeric">
+        <div id="cdrop" style="display:none"></div>
+        <div id="np-sel" style="display:none;margin-top:6px;padding:8px 12px;background:rgba(125,197,32,.1);border:1px solid rgba(125,197,32,.3);border-radius:8px;font-size:16px;font-weight:700;color:var(--accent)"></div>
+        <input type="hidden" id="np-id"><input type="hidden" id="np-num">
+      </div>
+      <span class="fl">CANTÓN</span>
+      <input type="text" id="np-canton" class="fi" placeholder="Auto-rellenado..." readonly>
+      <span class="fl">TIPO DE AVERÍA * (uno o varios)</span>
+      <div class="cw" id="np-tipos"></div>
+      <span class="fl">NOTAS DEL OPERARIO</span>
+      <textarea id="np-notas" class="fi" style="min-height:65px;resize:none" placeholder="Descripción adicional..."></textarea>
+      <button class="bp bf" onclick="guardarNP()">GUARDAR PARTE</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div class="mov" id="m-det">
+  <div class="mpan">
+    <div class="mhdr">
+      <button class="mc" onclick="cm('m-det')">✕</button>
+      <div style="flex:1"><div class="mt" id="d-num">Parte #—</div><div style="font-size:11px;color:var(--text2)" id="d-sub">—</div></div>
+      <div class="dt">
+        <button class="dtb on" onclick="dTab('parte',this)">📋 PARTE</button>
+        <button class="dtb" onclick="dTab('hist',this)">🕐 HISTORIAL</button>
+      </div>
+    </div>
+    <div class="mbod" style="padding:0">
+      <div id="dt-p" style="padding:14px;background:var(--bg2)">
+        <div class="ig">
+          <div class="ic" style="border-right:1px solid var(--border);border-bottom:1px solid var(--border)"><div class="il">FECHA</div><div class="iv" id="d-fecha">—</div></div>
+          <div class="ic" style="border-bottom:1px solid var(--border)"><div class="il">CARRO</div><div class="iv" id="d-carro" style="font-size:20px;color:var(--accent)">—</div></div>
+          <div class="ic" style="border-right:1px solid var(--border)"><div class="il">CANTÓN</div><div class="iv" id="d-canton">—</div></div>
+          <div class="ic"><div class="il">AVERÍAS</div><div id="d-averias" style="display:flex;flex-wrap:wrap;gap:3px;margin-top:3px"></div></div>
+        </div>
+        <div id="d-dw" style="display:none;margin-bottom:14px;padding:10px 12px;background:rgba(125,197,32,.06);border:1px solid rgba(125,197,32,.2);border-radius:8px">
+          <div class="il" style="margin-bottom:4px">DEL OPERARIO</div>
+          <div id="d-desc" style="font-size:13px;color:var(--text);line-height:1.5"></div>
+        </div>
+        <div class="fl" style="margin-bottom:6px">ESTADO</div>
+        <div class="eg">
+          <button onclick="setEst('pendiente')" id="e-pe" class="eb" style="border-color:var(--red);color:var(--red)"><div style="width:8px;height:8px;border-radius:50%;background:var(--red);margin:0 auto 3px"></div>PENDIENTE REVISAR</button>
+          <button onclick="setEst('leve')" id="e-le" class="eb" style="border-color:var(--yellow);color:var(--yellow)"><div style="width:8px;height:8px;border-radius:50%;background:var(--yellow);margin:0 auto 3px"></div>LEVE</button>
+          <button onclick="setEst('reparando')" id="e-re" class="eb" style="border-color:var(--orange);color:var(--orange)"><div style="width:8px;height:8px;border-radius:50%;background:var(--orange);margin:0 auto 3px"></div>REPARANDO</button>
+          <button onclick="setEst('operativo')" id="e-op" class="eb" style="border-color:var(--green);color:var(--green)"><div style="width:8px;height:8px;border-radius:50%;background:var(--green);margin:0 auto 3px"></div>OPERATIVO</button>
+        </div>
+        <button class="bn" onclick="openNPe2()">📋 + NOTA PENDIENTE</button>
+        <div class="fl" style="margin-bottom:6px">TIPO AVERÍA DIAGNOSTICADA <span style="color:var(--text3);font-weight:400">(VARIOS)</span></div>
+        <div class="cw" id="d-diag"></div>
+        <button onclick="nav('blink');cm('m-det')" style="width:100%;background:rgba(240,128,48,.08);border:1px solid rgba(240,128,48,.3);border-radius:8px;padding:10px 14px;color:var(--orange);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+          <span>⚡ CONSULTAR BLINK CODE</span><span style="font-size:11px;opacity:.6">1.1 · 2.3 · ...</span>
+        </button>
+        <div class="fl" style="margin-bottom:6px">REPUESTOS MONTADOS</div>
+        <div id="d-reps" style="font-size:12px;color:var(--text3);font-style:italic;margin-bottom:8px">Sin repuestos añadidos</div>
+        <div class="rc" style="margin-bottom:14px">
+          <select id="d-rs" class="fse" style="flex:1;margin:0;padding:8px 10px">
+            <option value="">— Seleccionar —</option>
+            <option>Muelle</option><option>Relé</option><option>Micro</option><option>Potenciómetro</option>
+            <option>LCD</option><option>Soportes motor</option><option>Cable cargador</option>
+            <option>Cargador</option><option>Batería</option><option>Motor</option><option>Freno motor</option>
+            <option>Rueda</option><option>Chasis</option><option>Rotativo</option><option>Gomas</option>
+            <option>Seta</option><option>Clausor</option><option>Instalación motor</option>
+            <option>Instalación controladora</option><option>Otros</option>
+          </select>
+          <button class="qb" onclick="rQ(-1)">−</button>
+          <span class="qn" id="d-qty">1</span>
+          <button class="qb" onclick="rQ(1)">+</button>
+          <button class="ba" onclick="addR()">+ AÑADIR</button>
+        </div>
+        <div class="fl" style="margin-bottom:6px">NOTAS DE REPARACIÓN</div>
+        <textarea id="d-notas" class="fi" style="min-height:65px;resize:none;margin-bottom:14px" placeholder="Notas de reparación..."></textarea>
+        <div class="fl" style="margin-bottom:6px">FOTOS DEL TÉCNICO</div>
+        <label style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;border-radius:8px;border:1.5px dashed var(--border2);background:var(--bg3);cursor:pointer;color:var(--text2);font-size:13px;margin-bottom:8px">
+          📷 AÑADIR FOTOS<input type="file" accept="image/*" multiple style="display:none" onchange="upF(this)">
+        </label>
+        <div id="d-fotos" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+        <button class="bp bf" onclick="guardarD()" style="margin-bottom:10px">GUARDAR</button>
+        <button class="bt" onclick="openNT2()">📢 AÑADIR NOTA AL TABLÓN</button>
+        <button class="bd" onclick="delP()">🗑 ELIMINAR PARTE</button>
+      </div>
+      <div id="dt-h" style="display:none;padding:14px;background:var(--bg2)"><div id="d-hist"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PENDIENTE -->
+<div class="mov" id="m-pe">
+  <div class="mpan">
+    <div class="mhdr"><button class="mc" onclick="cm('m-pe')">✕</button><div class="mt">📋 Nueva tarea pendiente</div></div>
+    <div class="mbod">
+      <span class="fl">CARRO (opcional)</span>
+      <input type="number" id="pe-c" class="fi" placeholder="Número del carro..." inputmode="numeric">
+      <span class="fl">TAREA *</span>
+      <textarea id="pe-t" class="fi" style="min-height:80px;resize:none" placeholder="Ej: Pendiente cambiar rotativo al 235..."></textarea>
+      <button class="bp bf" onclick="savePe()">GUARDAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TABLÓN -->
+<div class="mov" id="m-tab">
+  <div class="mpan">
+    <div class="mhdr"><button class="mc" onclick="cm('m-tab')">✕</button><div class="mt">📢 Nueva nota al tablón</div></div>
+    <div class="mbod">
+      <span class="fl">CARRO (opcional)</span>
+      <input type="number" id="tb-c" class="fi" placeholder="Número del carro..." inputmode="numeric">
+      <span class="fl">TÍTULO</span>
+      <input type="text" id="tb-t" class="fi" placeholder="Título de la nota...">
+      <span class="fl">MENSAJE</span>
+      <textarea id="tb-m" class="fi" style="min-height:80px;resize:none" placeholder="Descripción..."></textarea>
+      <button class="bp bf" onclick="saveTab()">GUARDAR</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// SUPABASE — tablas ec_* (independiente)
+// ════════════════════════════════════════
+const SURL='https://ruqzfrhfnmholbqsrelz.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1cXpmcmhmbm1ob2xicXNyZWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDMzNzIsImV4cCI6MjA4OTU3OTM3Mn0.5HSqvUKt5KnXCtpkRPSYoTRa4zceqVS-1YnCIkx7Xqg';
+const db=supabase.createClient(SURL,SKEY);
+
+const TIPOS=['NO ENCIENDE','NO SE MUEVE','NO CARGA','SIN FUERZA','SE MUEVE SOLO','SOLO AVANZA','SOLO RETROCEDE','NO SE QUEDA FRENADO','NO SE PUEDE GIRAR','SOPORTES DE CEPILLOS','LUCES','OTROS'];
+const DIAG=['Relé','Instalación controladora','Instalación mandos','Instalación motor','Otros cables','Micro','Potenciómetro','LCD','Cargador','Cable cargador','Sin batería','Batería','Rueda','Motor','Freno motor','Chasis','Soportes','Otros'];
+const BLK=[
+  {c:'1-1',d:'Error controladora',s:'Apagar/encender. Revisar conexiones.'},
+  {c:'1-2',d:'Sobrecorriente motor',s:'Revisar motor y cables.'},
+  {c:'1-3',d:'Batería baja',s:'Cargar batería. Revisar cargador.'},
+  {c:'2-1',d:'Error potenciómetro',s:'Revisar potenciómetro y conexiones.'},
+  {c:'2-2',d:'Fallo micro de marcha',s:'Revisar y ajustar micros.'},
+  {c:'2-3',d:'Error freno motor',s:'Revisar freno motor.'},
+  {c:'3-1',d:'Temperatura elevada',s:'Dejar enfriar. Revisar ventilación.'},
+  {c:'3-2',d:'Error relé principal',s:'Cambiar relé. Revisar soldaduras.'},
+  {c:'3-3',d:'Fallo instalación eléctrica',s:'Revisar cableado completo.'},
+  {c:'4-1',d:'Error LCD/pantalla',s:'Revisar conector. Cambiar pantalla.'},
+  {c:'4-2',d:'Error cargador',s:'Revisar cable cargador y conector.'},
+  {c:'4-3',d:'Fallo GPS',s:'Revisar antena y conexión GPS.'},
+  {c:'5-1',d:'Motor bloqueado',s:'Revisar cuerpos extraños y rodamientos.'},
+  {c:'5-2',d:'Error seta emergencia',s:'Verificar seta. Limpiar contactos.'},
+  {c:'5-3',d:'Fallo general',s:'Usar polímetro. Contactar taller.'},
+];
+const COL={pendiente:'#e05050',leve:'#f0c040',reparando:'#f08030',operativo:'#7dc520',arreglado:'#7dc520',cancelado:'#3a7080'};
+const LBL={pendiente:'PENDIENTE',leve:'LEVE',reparando:'REPARANDO',operativo:'OPERATIVO',arreglado:'OPERATIVO',cancelado:'CANCELADO'};
+
+let G={
+  carros:{},partes:[],alm:[],tabD:[],peD:[],
+  vista:'hoy',filtro:'todos',tF:'todos',
+  pA:null,rQ:1,
+  rtCh:null,pollT:null,
+  uid:'e851e98f-198b-4e09-9af7-5c87034559d0',user:'José'
+};
+
+window.addEventListener('DOMContentLoaded',async()=>{
+  document.getElementById('np-tipos').innerHTML=TIPOS.map(t=>`<button class="cc" onclick="ct(this)">${t}</button>`).join('');
+  document.getElementById('d-diag').innerHTML=DIAG.map(t=>`<button class="dc" onclick="ct(this)">${t}</button>`).join('');
+  rBlink('');
+  await load();
+  document.addEventListener('click',e=>{
+    const dd=document.getElementById('cdrop'),inp=document.getElementById('np-s');
+    if(dd&&inp&&!dd.contains(e.target)&&e.target!==inp)dd.style.display='none';
+  });
+  document.querySelectorAll('.mov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('on');}));
+});
+
+// ════════════════════════════════════════
+// CARGA — ec_carros + ec_partes
+// ════════════════════════════════════════
+async function load(){
+  document.getElementById('lp').innerHTML='<div class="ldg"><div class="sp"></div></div>';
+  try{
+    const {data:cs,error:ce}=await db.from('ec_carros').select('*').order('numero');
+    if(ce)throw ce;
+    G.carros={};(cs||[]).forEach(c=>G.carros[c.numero]=c);
+    const t={pendiente:0,leve:0,reparando:0,operativo:0};
+    (cs||[]).forEach(c=>{if(t[c.estado]!==undefined)t[c.estado]++;});
+    $('s0',(cs||[]).length);$('s1',t.pendiente);$('s2',t.leve);$('s3',t.reparando);$('s4',t.operativo);
+    const {data:ps,error:pe}=await db.from('ec_partes')
+      .select('*').not('estado','in','("arreglado","operativo","cancelado")')
+      .order('created_at',{ascending:false}).limit(300);
+    if(pe)throw pe;
+    G.partes=ps||[];
+    rp();activarRT();
+  }catch(e){
+    document.getElementById('lp').innerHTML=`<div style="padding:24px;color:var(--red);font-size:13px">⚠️ ${e.message||JSON.stringify(e)}</div>`;
+    console.error(e);
+  }
+}
+
+async function loadS(){
+  try{
+    const[{data:cs},{data:ps}]=await Promise.all([
+      db.from('ec_carros').select('*').order('numero'),
+      db.from('ec_partes').select('*').not('estado','in','("arreglado","operativo","cancelado")').order('created_at',{ascending:false}).limit(300)
+    ]);
+    G.carros={};(cs||[]).forEach(c=>G.carros[c.numero]=c);
+    G.partes=ps||[];
+    const t={pendiente:0,leve:0,reparando:0,operativo:0};
+    (cs||[]).forEach(c=>{if(t[c.estado]!==undefined)t[c.estado]++;});
+    $('s0',(cs||[]).length);$('s1',t.pendiente);$('s2',t.leve);$('s3',t.reparando);$('s4',t.operativo);
+    rp();
+  }catch(e){console.warn(e);}
+}
+
+// ════════════════════════════════════════
+// REALTIME
+// ════════════════════════════════════════
+function activarRT(){
+  if(G.rtCh)try{db.removeChannel(G.rtCh);}catch(e){}
+  if(G.pollT)clearInterval(G.pollT);
+  G.rtCh=db.channel('ec-rt')
+    .on('postgres_changes',{event:'*',schema:'public',table:'ec_partes'},pl=>{
+      const{eventType:ev,new:n,old:o}=pl;
+      if(ev==='INSERT'&&n&&!G.partes.find(x=>x.id===n.id)){
+        G.partes.unshift(n);rp();toast(`⚡ Nuevo parte — Carro ${n.carro_num}`,'ok');
+      }else if(ev==='UPDATE'&&n){
+        const i=G.partes.findIndex(x=>x.id===n.id);
+        if(i!==-1)G.partes[i]={...G.partes[i],...n};
+        else if(!['arreglado','operativo','cancelado'].includes(n.estado))G.partes.unshift(n);
+        rp();
+      }else if(ev==='DELETE'&&o){G.partes=G.partes.filter(x=>x.id!==o.id);rp();}
+    })
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'ec_carros'},pl=>{
+      if(pl.new&&G.carros[pl.new.numero]){G.carros[pl.new.numero]={...G.carros[pl.new.numero],...pl.new};rp();}
+    })
+    .subscribe(s=>{
+      const d=document.getElementById('rtd');
+      if(d)d.style.background=s==='SUBSCRIBED'?'var(--green)':'var(--yellow)';
+    });
+  G.pollT=setInterval(loadS,90000);
+}
+
+// ════════════════════════════════════════
+// RENDER PANEL
+// ════════════════════════════════════════
+function setV(v,btn){
+  G.vista=v;
+  document.querySelectorAll('.ntab').forEach(b=>b.classList.remove('on'));
+  const m={hoy:'tab-hoy',pend:'tab-pend',todos:'tab-todos'};
+  if(m[v])document.getElementById(m[v]).classList.add('on');
+  nav('panel');rp();
+}
+function setF(f,btn){
+  G.filtro=f;
+  document.querySelectorAll('.fa').forEach(b=>b.classList.add('off'));
+  document.querySelectorAll('.fdot').forEach(b=>b.classList.add('off'));
+  if(f==='todos'){document.getElementById('ft').classList.remove('off');document.querySelectorAll('.fdot').forEach(b=>b.classList.remove('off'));}
+  else{document.getElementById('ft').classList.add('off');if(btn)btn.classList.remove('off');}
+  rp();
+}
+function rp(){
+  const lp=document.getElementById('lp'),ctr=document.getElementById('ctr');
+  if(!lp)return;
+  const q=(document.getElementById('q')?.value||'').toLowerCase().trim();
+  const rf=(document.getElementById('fr')?.value||'').toLowerCase();
+  const hoy=new Date().toISOString().split('T')[0];
+  let p=G.partes.slice();
+  if(G.vista==='hoy') p=p.filter(x=>x.created_at.startsWith(hoy));
+  else if(G.vista==='pend') p=p.filter(x=>x.estado==='pendiente');
+  if(G.filtro!=='todos') p=p.filter(x=>{
+    const c=G.carros[x.carro_num]||{};
+    return G.filtro==='reparando'?c.estado==='reparando'||x.estado==='reparando':c.estado===G.filtro;
+  });
+  if(q) p=p.filter(x=>String(x.carro_num).includes(q)||(x.canton||'').toLowerCase().includes(q)||(x.averias||'').toLowerCase().includes(q));
+  if(rf) p=p.filter(x=>(x.averias||'').toLowerCase().includes(rf)||(x.repuesto||'').toLowerCase().includes(rf));
+  ctr.textContent=p.length+' PARTE'+(p.length!==1?'S':'');
+  if(!p.length){lp.innerHTML=`<div class="emp"><div class="emp-i">${G.vista==='hoy'?'☀️':'✅'}</div><div class="emp-t">${G.vista==='hoy'?'Sin partes hoy':'Sin partes con estos filtros'}</div></div>`;return;}
+  lp.innerHTML=p.map(x=>{
+    const col=COL[x.estado]||'#e05050';
+    const lbl=LBL[x.estado]||'PENDIENTE';
+    const fecha=new Date(x.created_at).toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
+    const avs=(x.averias||'').toUpperCase().replace(/\|/g,' · ');
+    const chips=TIPOS.filter(t=>(x.averias||'').toUpperCase().includes(t)).slice(0,5).map(t=>`<span class="ct">${t}</span>`).join('');
+    const no=x.nota_op?`<div class="tno">${x.nota_op.length>70?x.nota_op.slice(0,70)+'...':x.nota_op}</div>`:'';
+    return `<div class="tc" style="border-left-color:${col}" onclick="abrirD(${x.id})">
+      <div class="ti">
+        <div class="tn" style="background:${col}">${x.carro_num}</div>
+        <div class="tb2">
+          <div class="tca">${(x.canton||'—').toUpperCase()}</div>
+          <div class="tf2">${fecha}</div>
+          <div class="ta">${avs}</div>
+          ${no}${chips?`<div class="tch">${chips}</div>`:''}
+        </div>
+        <div class="tew"><div class="edo" style="background:${col}"></div><span class="et" style="color:${col}">${lbl}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════
+// NUEVO PARTE
+// ════════════════════════════════════════
+function openNP(){
+  ['np-s','np-canton','np-notas'].forEach(id=>document.getElementById(id).value='');
+  ['np-id','np-num'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('np-sel').style.display='none';
+  document.getElementById('cdrop').style.display='none';
+  document.querySelectorAll('#np-tipos .cc').forEach(b=>{b.classList.remove('on');b.style.cssText='';});
+  om('m-np');setTimeout(()=>document.getElementById('np-s')?.focus(),300);
+}
+function buscarC(q){
+  const dd=document.getElementById('cdrop');
+  if(!q.trim()){dd.style.display='none';return;}
+  const lista=Object.values(G.carros).filter(c=>String(c.numero).includes(q.trim())||(c.canton||'').toLowerCase().includes(q.toLowerCase())).slice(0,15);
+  if(!lista.length){dd.style.display='none';return;}
+  dd.innerHTML=lista.map(c=>`<div class="di" onclick="selC(${c.numero})"><span class="dm">${c.numero}</span><span class="dc2">${c.canton||'—'}</span></div>`).join('');
+  dd.style.display='block';
+}
+function selC(num){
+  const c=G.carros[num];if(!c)return;
+  document.getElementById('np-id').value=c.id;
+  document.getElementById('np-num').value=num;
+  document.getElementById('np-s').value=num;
+  document.getElementById('np-canton').value=c.canton||'';
+  document.getElementById('cdrop').style.display='none';
+  const s=document.getElementById('np-sel');
+  s.textContent=`Nº ${num}  ·  ${c.canton||'—'}`;s.style.display='block';
+}
+async function guardarNP(){
+  const cId=parseInt(document.getElementById('np-id').value);
+  const cNum=parseInt(document.getElementById('np-num').value);
+  const canton=document.getElementById('np-canton').value.trim();
+  const notas=document.getElementById('np-notas').value.trim();
+  const tipos=[...document.querySelectorAll('#np-tipos .cc.on')].map(b=>b.textContent);
+  if(!cId){toast('Selecciona un carro','err');return;}
+  if(!tipos.length){toast('Selecciona al menos un tipo','err');return;}
+  const{error}=await db.from('ec_partes').insert({carro_id:cId,carro_num:cNum,canton,averias:tipos.join('|'),nota_op:notas||null,estado:'pendiente',fuente:'app'});
+  if(error){toast('Error: '+error.message,'err');return;}
+  await db.from('ec_carros').update({estado:'pendiente',updated_at:new Date().toISOString()}).eq('numero',cNum);
+  toast('✅ Parte creado','ok');cm('m-np');await load();
+}
+
+// ════════════════════════════════════════
+// DETALLE PARTE
+// ════════════════════════════════════════
+async function abrirD(id){
+  let p=G.partes.find(x=>x.id===id);if(!p)return;
+  try{const{data:f}=await db.from('ec_partes').select('*').eq('id',id).single();if(f){p=f;const i=G.partes.findIndex(x=>x.id===id);if(i!==-1)G.partes[i]=f;}}catch(e){}
+  G.pA=p;G.rQ=1;
+  const fecha=new Date(p.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'});
+  $('d-num',`Parte #${p.id}`);$('d-sub',`${p.carro_num} · ${p.canton||'—'}`);
+  $('d-fecha',fecha);$('d-carro',`Nº ${p.carro_num}`);$('d-canton',p.canton||'—');$('d-qty','1');
+  document.getElementById('d-notas').value=p.notas_mec||'';
+  document.getElementById('d-averias').innerHTML=(p.averias||'').split('|').filter(Boolean).map(t=>`<span class="ct">${t.trim()}</span>`).join('');
+  const dw=document.getElementById('d-dw'),dd=document.getElementById('d-desc');
+  if(p.nota_op){dd.textContent=p.nota_op;dw.style.display='block';}else dw.style.display='none';
+  const c=G.carros[p.carro_num]||{};
+  const est=c.estado||p.estado||'pendiente';
+  const cols={pendiente:'#e05050',leve:'#f0c040',reparando:'#f08030',operativo:'#7dc520'};
+  const eM={pendiente:'e-pe',leve:'e-le',reparando:'e-re',operativo:'e-op'};
+  Object.entries(eM).forEach(([e,bid])=>{
+    const b=document.getElementById(bid);if(!b)return;
+    const on=e===est||(e==='operativo'&&est==='arreglado');
+    b.classList.toggle('on',on);b.style.opacity=on?'1':'0.5';b.style.background=on?cols[e]+'22':'var(--bg3)';
+  });
+  const td=(p.tipo_diag||'').split('|').filter(Boolean).map(s=>s.toLowerCase());
+  document.querySelectorAll('#d-diag .dc').forEach(b=>{
+    const on=td.includes(b.textContent.toLowerCase());
+    b.classList.toggle('on',on);
+    if(on){b.style.background='rgba(125,197,32,.2)';b.style.borderColor='var(--accent)';b.style.color='var(--accent)';}
+    else{b.style.background='';b.style.borderColor='';b.style.color='';}
+  });
+  const fotos=(p.fotos_rep||'').split('\n').filter(Boolean);
+  document.getElementById('d-fotos').innerHTML=fotos.map(u=>`<img src="${u}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="lb('${u}')">`).join('');
+  mReps(p);
+  dTab('parte',document.querySelector('#m-det .dtab'));
+  om('m-det');
+  loadHist(p.carro_num);
+}
+function mReps(p){
+  const el=document.getElementById('d-reps');
+  if(p.repuesto){
+    el.innerHTML=p.repuesto.split('|').filter(Boolean).map(r=>`<div class="rr"><span class="rn">🔩 ${r}</span></div>`).join('');
+  }else{
+    el.innerHTML='<span style="font-size:12px;color:var(--text3);font-style:italic">Sin repuestos añadidos</span>';
+  }
+}
+function dTab(tab,btn){
+  document.getElementById('dt-p').style.display=tab==='parte'?'block':'none';
+  document.getElementById('dt-h').style.display=tab==='hist'?'block':'none';
+  document.querySelectorAll('#m-det .dtb').forEach(b=>{
+    b.classList.toggle('on',(tab==='parte'&&b.textContent.includes('PARTE'))||(tab==='hist'&&b.textContent.includes('HISTORIAL')));
+  });
+}
+async function setEst(est){
+  if(!G.pA)return;
+  const p=G.pA;
+  const cols={pendiente:'#e05050',leve:'#f0c040',reparando:'#f08030',operativo:'#7dc520'};
+  await db.from('ec_carros').update({estado:est,updated_at:new Date().toISOString()}).eq('numero',p.carro_num);
+  if(G.carros[p.carro_num])G.carros[p.carro_num].estado=est;
+  const pEst=est==='operativo'?'arreglado':est;
+  await db.from('ec_partes').update({estado:pEst,updated_at:new Date().toISOString()}).eq('id',p.id);
+  p.estado=pEst;
+  const eM={pendiente:'e-pe',leve:'e-le',reparando:'e-re',operativo:'e-op'};
+  Object.entries(eM).forEach(([e,bid])=>{
+    const b=document.getElementById(bid);if(!b)return;
+    const on=e===est;b.classList.toggle('on',on);b.style.opacity=on?'1':'0.5';b.style.background=on?cols[e]+'22':'var(--bg3)';
+  });
+  toast('Estado actualizado','ok');rp();
+}
+function rQ(d){G.rQ=Math.max(1,(G.rQ||1)+d);$('d-qty',G.rQ);}
+async function addR(){
+  const nombre=document.getElementById('d-rs').value;
+  if(!nombre){toast('Selecciona un repuesto','err');return;}
+  const p=G.pA;if(!p)return;
+  const qty=G.rQ;
+  const rs=qty>1?`${nombre} x${qty}`:nombre;
+  const actual=p.repuesto?p.repuesto+'|'+rs:rs;
+  const{error}=await db.from('ec_partes').update({repuesto:actual,updated_at:new Date().toISOString()}).eq('id',p.id);
+  if(error){toast('Error: '+error.message,'err');return;}
+  p.repuesto=actual;
+  const{data:ar}=await db.from('ec_almacen').select('id,stock_actual').ilike('nombre','%'+nombre+'%').limit(1).maybeSingle().catch(()=>({data:null}));
+  if(ar)await db.from('ec_almacen').update({stock_actual:Math.max(0,(ar.stock_actual||0)-qty),updated_at:new Date().toISOString()}).eq('id',ar.id);
+  toast(nombre+' ×'+qty+' añadido','ok');mReps(p);
+  document.getElementById('d-rs').value='';G.rQ=1;$('d-qty','1');
+}
+async function guardarD(){
+  const p=G.pA;if(!p)return;
+  const notas=document.getElementById('d-notas').value.trim();
+  const diags=[...document.querySelectorAll('#d-diag .dc.on')].map(b=>b.textContent);
+  const pEst=p.estado==='pendiente'?'reparando':p.estado;
+  await db.from('ec_partes').update({notas_mec:notas||null,tipo_diag:diags.length?diags.join('|'):null,estado:pEst,updated_at:new Date().toISOString()}).eq('id',p.id);
+  if(pEst!==p.estado){
+    await db.from('ec_carros').update({estado:pEst,updated_at:new Date().toISOString()}).eq('numero',p.carro_num);
+    if(G.carros[p.carro_num])G.carros[p.carro_num].estado=pEst;
+  }
+  toast('Guardado','ok');cm('m-det');await load();
+}
+async function upF(input){
+  const files=Array.from(input.files);const p=G.pA;if(!p)return;
+  const grid=document.getElementById('d-fotos');
+  for(const f of files){
+    const ruta=`ecarr/${p.carro_num}/${Date.now()}_${f.name.replace(/\s+/g,'_')}`;
+    const{error}=await db.storage.from('gmao-files').upload(ruta,f,{upsert:false});
+    if(error){toast('Error foto','err');continue;}
+    const{data}=db.storage.from('gmao-files').getPublicUrl(ruta);
+    const url=data.publicUrl;
+    const actual=p.fotos_rep?p.fotos_rep+'\n'+url:url;
+    await db.from('ec_partes').update({fotos_rep:actual}).eq('id',p.id);
+    p.fotos_rep=actual;
+    grid.innerHTML+=`<img src="${url}" style="width:64px;height:64px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer" onclick="lb('${url}')">`;
+  }
+  input.value='';
+}
+function lb(url){const w=window.open('','_blank');if(w)w.document.write(`<html><body style="margin:0;background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh"><img src="${url}" style="max-width:100%;max-height:100vh"></body></html>`);}
+async function delP(){
+  if(!G.pA||!confirm('¿Eliminar este parte?'))return;
+  await db.from('ec_partes').update({estado:'cancelado',updated_at:new Date().toISOString()}).eq('id',G.pA.id);
+  await db.from('ec_carros').update({estado:'operativo',updated_at:new Date().toISOString()}).eq('numero',G.pA.carro_num);
+  toast('Parte eliminado','ok');cm('m-det');await load();
+}
+async function loadHist(num){
+  const el=document.getElementById('d-hist');
+  el.innerHTML='<div class="ldg"><div class="sp"></div></div>';
+  const{data}=await db.from('ec_partes').select('*').eq('carro_num',num).order('created_at',{ascending:false}).limit(50);
+  if(!data?.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text3)">Sin historial</div>';return;}
+  const cH={arreglado:'#7dc520',operativo:'#7dc520',pendiente:'#e05050',reparando:'#f08030',leve:'#f0c040',cancelado:'#3a7080'};
+  const lH={arreglado:'Arreglado',operativo:'Operativo',pendiente:'Pendiente',reparando:'Reparando',leve:'Leve',cancelado:'Cancelado'};
+  el.innerHTML=data.map(p=>{
+    const fecha=new Date(p.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'});
+    const col=cH[p.estado]||'#7ab0b8';
+    const diags=(p.tipo_diag||'').split('|').filter(Boolean);
+    const reps=(p.repuesto||'').split('|').filter(Boolean);
+    const fotos=(p.fotos_rep||'').split('\n').filter(Boolean);
+    return `<div class="he" style="border-left-color:${col}">
+      <div class="hh"><span class="hfe">${fecha}</span><span class="hes" style="color:${col}">${(lH[p.estado]||p.estado).toUpperCase()}</span></div>
+      <div class="hav">${(p.averias||'').replace(/\|/g,' · ')}</div>
+      ${p.nota_op?`<div class="hno">📝 ${p.nota_op}</div>`:''}
+      ${diags.length?`<div class="hch">${diags.map(t=>`<span class="hcd">${t}</span>`).join('')}</div>`:''}
+      ${p.notas_mec?`<div class="hm">🔧 ${p.notas_mec}</div>`:''}
+      ${reps.length?`<div class="hr2">${reps.map(r=>`<span class="hcr">🔩 ${r}</span>`).join('')}</div>`:''}
+      ${fotos.length?`<div style="display:flex;gap:4px;margin-top:6px;flex-wrap:wrap">${fotos.map(u=>`<img src="${u}" style="width:48px;height:48px;object-fit:cover;border-radius:4px;border:1px solid var(--border);cursor:pointer" onclick="lb('${u}')">`).join('')}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════
+// BLINK
+// ════════════════════════════════════════
+function rBlink(q){
+  const ql=q.toLowerCase();
+  const lista=BLK.filter(b=>!ql||b.c.includes(ql)||b.d.toLowerCase().includes(ql)||b.s.toLowerCase().includes(ql));
+  const el=document.getElementById('lbk');if(!el)return;
+  el.innerHTML=lista.map(b=>`<div class="bc"><div class="bco">${b.c}</div><div class="bde">${b.d}</div><div class="bso">🔧 ${b.s}</div></div>`).join('')||'<div style="padding:24px;text-align:center;color:var(--text3)">Sin resultados</div>';
+}
+
+// ════════════════════════════════════════
+// ALMACÉN
+// ════════════════════════════════════════
+async function loadAlm(){
+  if(G.alm.length)return;
+  const{data}=await db.from('ec_almacen').select('*').eq('activo',true).order('nombre');
+  G.alm=data||[];rAlm('');
+}
+function rAlm(q){
+  const ql=q.toLowerCase();
+  const lista=G.alm.filter(r=>!ql||r.nombre.toLowerCase().includes(ql));
+  const el=document.getElementById('lalm');if(!el)return;
+  if(!lista.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--text3)">Sin repuestos</div>';return;}
+  const col=r=>(r.stock_actual||0)<=0?'#e05050':(r.stock_actual||0)<=(r.stock_minimo||1)?'#f0c040':'#7dc520';
+  el.innerHTML=lista.map(r=>`<div class="ar"><div><div class="an">${r.nombre}</div><div class="au">${r.ubicacion||'—'}</div></div><div style="text-align:right"><div class="as2" style="color:${col(r)}">${r.stock_actual||0}</div><div class="au2">${r.unidad||'ud'}</div></div></div>`).join('');
+}
+
+// ════════════════════════════════════════
+// CARROS
+// ════════════════════════════════════════
+function rCarros(q=''){
+  const ql=q.toLowerCase();
+  let cs=Object.values(G.carros);
+  if(ql)cs=cs.filter(c=>String(c.numero).includes(ql)||(c.canton||'').toLowerCase().includes(ql));
+  cs.sort((a,b)=>{const o={pendiente:0,reparando:1,leve:2,operativo:3};return(o[a.estado]??4)-(o[b.estado]??4)||a.numero-b.numero;});
+  const el=document.getElementById('gca');if(!el)return;
+  if(!cs.length){el.innerHTML='<div class="emp" style="grid-column:1/-1"><div class="emp-i">🚗</div><div class="emp-t">Sin carros</div></div>';return;}
+  const lC={pendiente:'PENDIENTE',leve:'LEVE',reparando:'REPARANDO',operativo:'OPERATIVO'};
+  el.innerHTML=cs.map(c=>{
+    const col=COL[c.estado]||'#7dc520';const lbl=lC[c.estado]||'—';
+    const pa=G.partes.find(p=>p.carro_num===c.numero&&!['arreglado','operativo','cancelado'].includes(p.estado));
+    return `<div class="ca" style="border-color:${col}44;border-top-color:${col}" onclick="cClick(${c.numero})">
+      <div class="cm2" style="color:${col}">${c.numero}</div>
+      <div class="cc2">${(c.canton||'—').toUpperCase()}</div>
+      <div class="ce" style="color:${col}">${lbl}</div>
+      ${pa?`<div class="cv">${(pa.averias||'').replace(/\|/g,'·').slice(0,28)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function cClick(num){
+  const pa=G.partes.find(p=>p.carro_num===num&&!['arreglado','operativo','cancelado'].includes(p.estado));
+  if(pa)abrirD(pa.id);else toast('Sin partes activos','ok');
+}
+
+// ════════════════════════════════════════
+// PENDIENTES
+// ════════════════════════════════════════
+async function loadPe(){
+  const el=document.getElementById('lpe');
+  el.innerHTML='<div class="ldg"><div class="sp"></div></div>';
+  const{data}=await db.from('ec_pendientes').select('*').eq('usuario_id',G.uid).eq('completado',false).order('created_at',{ascending:false}).catch(()=>({data:[]}));
+  G.peD=data||[];rPe();
+}
+function rPe(){
+  const el=document.getElementById('lpe');if(!el)return;
+  if(!G.peD.length){el.innerHTML='<div class="emp"><div class="emp-i">✅</div><div class="emp-t">Sin pendientes</div></div>';return;}
+  const fd=d=>new Date(d).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'});
+  el.innerHTML=G.peD.map(p=>`<div class="pr">
+    <button class="pc" onclick="compPe(${p.id})"></button>
+    <div class="pb">${p.carro_num?`<div class="pca">Carro ${p.carro_num}</div>`:''}<div class="pt">${p.contenido||''}</div><div class="pfe">${fd(p.created_at)}</div></div>
+    <button class="pd" onclick="delPe(${p.id})">✕</button>
+  </div>`).join('');
+}
+function openNPe(){document.getElementById('pe-c').value='';document.getElementById('pe-t').value='';om('m-pe');}
+function openNPe2(){if(G.pA)document.getElementById('pe-c').value=G.pA.carro_num||'';document.getElementById('pe-t').value='';cm('m-det');om('m-pe');}
+async function savePe(){
+  const c=document.getElementById('pe-c').value.trim();
+  const t=document.getElementById('pe-t').value.trim();
+  if(!t){toast('Escribe la tarea','err');return;}
+  await db.from('ec_pendientes').insert({usuario_id:G.uid,contenido:t,carro_num:c?parseInt(c):null,completado:false}).catch(()=>{});
+  toast('Pendiente añadido','ok');cm('m-pe');await loadPe();
+}
+async function compPe(id){
+  await db.from('ec_pendientes').update({completado:true}).eq('id',id).catch(()=>{});
+  G.peD=G.peD.filter(p=>p.id!==id);rPe();toast('✅ Completado','ok');
+}
+async function delPe(id){
+  if(!confirm('¿Eliminar?'))return;
+  await db.from('ec_pendientes').delete().eq('id',id).catch(()=>{});
+  G.peD=G.peD.filter(p=>p.id!==id);rPe();
+}
+
+// ════════════════════════════════════════
+// TABLÓN
+// ════════════════════════════════════════
+async function loadTab(){
+  const el=document.getElementById('ltab');
+  el.innerHTML='<div class="ldg"><div class="sp"></div></div>';
+  const{data}=await db.from('ec_tablon').select('*').order('created_at',{ascending:false}).limit(50);
+  G.tabD=data||[];rTab();
+}
+function setTF(f,btn){
+  G.tF=f;
+  ['tft','tfm','tfo'].forEach(id=>document.getElementById(id)?.classList.add('off'));
+  ({todos:'tft',mecanico:'tfm',operario:'tfo'})[f] && document.getElementById(({todos:'tft',mecanico:'tfm',operario:'tfo'})[f])?.classList.remove('off');
+  rTab();
+}
+function rTab(){
+  const el=document.getElementById('ltab');if(!el)return;
+  let d=G.tabD;if(G.tF!=='todos')d=d.filter(x=>x.tipo===G.tF);
+  if(!d.length){el.innerHTML='<div class="emp"><div class="emp-i">📢</div><div class="emp-t">Sin notas</div></div>';return;}
+  const col={mecanico:'var(--green)',operario:'var(--orange)'};
+  el.innerHTML=d.map(x=>{
+    const fecha=new Date(x.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    const c=col[x.tipo]||'var(--text2)';
+    return `<div class="te" style="border-left-color:${c}">
+      <div class="th">${x.carro_num?`<span class="tnl" style="color:${c};background:${c}22">${x.carro_num}</span>`:''} ${x.canton?`<span class="tct">${x.canton}</span>`:''} <span class="tft">${fecha}</span></div>
+      <div class="tt">${x.tipo==='mecanico'?'🔧':'👷'} ${x.titulo||''}</div>
+      ${x.mensaje&&x.mensaje!==x.titulo?`<div class="tm">${x.mensaje}</div>`:''}
+      <div class="tau">${x.autor||''}</div>
+    </div>`;
+  }).join('');
+}
+function openNT(){document.getElementById('tb-c').value='';document.getElementById('tb-t').value='';document.getElementById('tb-m').value='';om('m-tab');}
+function openNT2(){if(G.pA)document.getElementById('tb-c').value=G.pA.carro_num||'';document.getElementById('tb-t').value='';document.getElementById('tb-m').value='';cm('m-det');om('m-tab');}
+async function saveTab(){
+  const c=document.getElementById('tb-c').value.trim();
+  const t=document.getElementById('tb-t').value.trim();
+  const m=document.getElementById('tb-m').value.trim();
+  if(!t&&!m){toast('Escribe algo','err');return;}
+  await db.from('ec_tablon').insert({tipo:'mecanico',autor:G.user,carro_num:c?parseInt(c):null,titulo:t||m,mensaje:m||null}).catch(()=>{});
+  toast('Nota añadida','ok');cm('m-tab');await loadTab();
+}
+
+// ════════════════════════════════════════
+// NAVEGACIÓN
+// ════════════════════════════════════════
+function nav(name){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pg-'+name)?.classList.add('on');
+  document.getElementById('sb').style.display=name==='panel'?'block':'none';
+  if(name==='alm')loadAlm();
+  if(name==='carros')rCarros('');
+  if(name==='pends')loadPe();
+  if(name==='tablon')loadTab();
+  if(name==='blink')rBlink(document.querySelector('#pg-blink input')?.value||'');
+}
+
+// ════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════
+function om(id){document.getElementById(id)?.classList.add('on');}
+function cm(id){document.getElementById(id)?.classList.remove('on');}
+function $(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function ct(btn){
+  const on=!btn.classList.contains('on');btn.classList.toggle('on',on);
+  if(on){btn.style.background='rgba(125,197,32,.2)';btn.style.borderColor='var(--accent)';btn.style.color='var(--accent)';}
+  else{btn.style.background='';btn.style.borderColor='';btn.style.color='';}
+}
+function toast(msg,type='ok'){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='';t.classList.add('on',type);
+  clearTimeout(t._t);t._t=setTimeout(()=>t.className='',2600);
+}
+</script>
+</body>
+</html>
