@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,user-scalable=yes,viewport-fit=cover">
+<title>Parte de Averias</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+html{-webkit-text-size-adjust:100%;font-size:24px;overflow-x:clip}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--verde:#7AB800;--azul:#0D3C4A;--azul-medio:#164455;--azul-claro:#1E5568;--texto:#F0F8FA;--gris-texto:#7AABB8;--rojo:#E63535;--naranja:#f5a623}
+body{background:#0D3C4A;color:var(--texto);font-family:"Barlow",sans-serif;min-height:100vh;padding-bottom:60px}
+header{background:var(--azul);padding:10px 12px;display:flex;align-items:center;gap:8px;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+header h1{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:1.25rem;color:var(--verde);text-transform:uppercase;letter-spacing:.03em;line-height:1.1;flex:1}
+header h1 span{display:block;font-weight:400;font-size:.7rem;opacity:.75}
+.hbtn{-webkit-appearance:none;background:var(--azul-medio);border:1px solid var(--azul-claro);border-radius:8px;color:var(--texto);font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:1.1rem;text-transform:uppercase;padding:10px 12px;cursor:pointer;text-decoration:none;display:inline-block}
+main{padding:16px 10px;display:flex;flex-direction:column;gap:14px}
+.card{background:#112e3a;border:1px solid var(--azul-claro);border-radius:6px;overflow:hidden}
+.card-hdr{background:var(--azul-medio);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--azul-claro)}
+.card-hdr .num{background:var(--verde);color:#fff;font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:.8rem;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-hdr h2{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:1.2rem;text-transform:uppercase;letter-spacing:.1em}
+.card-body{padding:16px;display:flex;flex-direction:column;gap:14px}
+label.lbl{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:.12em;color:var(--verde);display:block;margin-bottom:6px}
+input[type="date"],textarea,select{-webkit-appearance:none;appearance:none;background:var(--azul);border:1px solid var(--azul-claro);border-radius:4px;color:var(--texto);font-family:"Barlow",sans-serif;font-size:20px;padding:14px;width:100%;outline:none;min-height:52px}
+input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.6)}
+textarea{resize:vertical;min-height:90px;line-height:1.5}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237AABB8' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+.req{color:var(--rojo)}
+.carro-big{-webkit-appearance:none;appearance:none;flex:1;background:#0a2530;border:1px solid var(--verde);border-radius:4px;color:var(--verde);font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:3.8rem;text-align:center;padding:10px 6px;width:100%;outline:none;min-height:0}
+.checklist{display:grid;grid-template-columns:1fr 1fr}
+.check-item{display:flex;align-items:center;gap:10px;padding:16px 10px;border-bottom:1px solid var(--azul-claro);border-right:1px solid var(--azul-claro);cursor:pointer;user-select:none;min-height:70px}
+.check-item:nth-child(even){border-right:none}
+.check-item:nth-last-child(-n+2){border-bottom:none}
+.check-box{-webkit-appearance:none;appearance:none;width:28px;height:28px;min-width:28px;border:2px solid var(--azul-claro);border-radius:5px;background:var(--azul);position:relative;cursor:pointer;flex-shrink:0}
+.check-box:checked{background:var(--verde);border-color:var(--verde)}
+.check-box:checked::after{content:"";position:absolute;left:5px;top:3px;width:14px;height:8px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg)}
+.check-icon{font-size:1.4rem;flex-shrink:0}
+.check-lbl{font-family:"Barlow Condensed",sans-serif;font-size:1.25rem;font-weight:700;text-transform:uppercase;line-height:1.2;flex:1}
+.check-box:checked~.check-lbl{color:var(--verde)}
+.mbtn-row{display:flex;gap:10px;margin-bottom:10px}
+.mbtn{-webkit-appearance:none;flex:1;background:#164455;border:1px solid #1E5568;border-radius:6px;color:#F0F8FA;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:.95rem;padding:14px 8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;min-height:52px}
+#preview{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.thumb{position:relative;width:72px;height:72px;border-radius:4px;overflow:hidden;border:1px solid var(--azul-claro)}
+.thumb img,.thumb video{width:100%;height:100%;object-fit:cover}
+.thumb .del{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.8);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.thumb .vlbl{position:absolute;bottom:2px;left:2px;background:rgba(0,0,0,.7);color:#fff;font-size:.5rem;padding:1px 4px;border-radius:2px;font-weight:700}
+.btn-row{display:flex;flex-direction:column;gap:10px}
+.btn{-webkit-appearance:none;appearance:none;padding:16px;border:none;border-radius:5px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:1.05rem;text-transform:uppercase;letter-spacing:.08em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;width:100%}
+.btn-sec{background:var(--azul-medio);color:var(--texto);border:1px solid var(--azul-claro)}
+.btn-env{background:var(--verde);color:#fff;font-size:1.15rem}
+.btn-env:disabled{background:#4a7a00;opacity:.7;cursor:not-allowed}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--verde);color:#fff;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:.95rem;text-transform:uppercase;padding:12px 28px;border-radius:4px;transition:transform .3s;z-index:999;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.err{background:var(--rojo)}
+.spinner{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes aparecer{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+#aviso{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
+#confirm-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:20px}
+#exito{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--azul);z-index:300;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+#exito.show{display:flex}
+</style>
+</head>
+<body>
+
+<!-- AVISO -->
+<div id="aviso">
+  <div style="background:#112e3a;border:3px solid var(--naranja);border-radius:14px;width:100%;max-width:480px;overflow:hidden;animation:aparecer .3s ease">
+    <div style="background:var(--naranja);padding:24px 28px;display:flex;align-items:center;gap:16px">
+      <span style="font-size:3rem;flex-shrink:0">&#9888;&#65039;</span>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:2.2rem;text-transform:uppercase;color:#1a1a1a;line-height:1.1">ATENCI&Oacute;N</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:1rem;color:#1a1a1a;opacity:.8;text-transform:uppercase;margin-top:4px">Antes de continuar</div>
+      </div>
+    </div>
+    <div style="padding:32px 28px">
+      <p style="font-size:1.5rem;line-height:1.7;margin-bottom:18px">Este parte es <strong style="color:var(--naranja)">&#250;nicamente</strong> para registrar la aver&iacute;a en el sistema e iniciar el proceso de reparaci&oacute;n.</p>
+      <p style="font-size:1.5rem;line-height:1.7;margin-bottom:36px">Recuerda <strong style="color:var(--naranja);text-transform:uppercase">comunicar la incidencia a tu superior de forma directa</strong> antes o despu&eacute;s de enviar este parte.</p>
+      <button onclick="document.getElementById('aviso').style.display='none'" style="-webkit-appearance:none;width:100%;padding:22px;background:var(--naranja);border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.6rem;text-transform:uppercase;color:#1a1a1a;cursor:pointer">&#10003; ENTENDIDO &mdash; CONTINUAR</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <h1>Parte de Averias<span>Carros Electricos</span></h1>
+  <a href="/" class="hbtn">&#8592; Panel</a>
+</header>
+
+<main>
+  <div class="card">
+    <div class="card-hdr"><div class="num">1</div><h2>Identificacion</h2></div>
+    <div class="card-body" style="padding:12px 16px">
+      <div style="display:flex;gap:12px;align-items:stretch">
+        <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+          <div><label class="lbl">Fecha <span class="req">*</span></label><input type="date" id="fecha"></div>
+          <div><label class="lbl">Canton <span class="req">*</span></label>
+            <select id="canton">
+              <option value="">Selecciona canton...</option>
+              <option>Plaza de Espa&ntilde;a</option><option>Cebada</option><option>Huertas</option>
+              <option>Reyes</option><option>Fucar</option><option>San Ambrosio</option>
+              <option>Santa Cruz de Marcenado</option><option>Santa Engracia</option>
+              <option>Paseo de la Direcci&oacute;n</option><option>Margaritas</option>
+              <option>M&aacute;rtires de la Ventanilla</option><option>Poeta Joan Maragall</option>
+              <option>Bravo Murillo</option><option>Balseiro</option><option>Eduardo Barreiros</option>
+            </select>
+          </div>
+        </div>
+        <div style="flex-shrink:0;width:42%;display:flex;flex-direction:column">
+          <label class="lbl">N Carro <span class="req">*</span></label>
+          <input type="number" id="carro" class="carro-big" placeholder="314" min="200" max="320" oninput="autoCanon(this.value)" style="flex:1">
+          <span id="err-carro" style="display:none;color:var(--rojo);font-size:.78rem;margin-top:5px">&#9888; N&uacute;mero entre 200-320</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="num">2</div><h2>Tipo de Averia</h2></div>
+    <div class="card-body" style="padding-top:8px;padding-bottom:8px">
+      <div class="checklist">
+        <label class="check-item"><input type="checkbox" class="check-box" value="NO ENCIENDE"><span class="check-icon">&#128308;</span><span class="check-lbl">No enciende</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="NO SE MUEVE"><span class="check-icon">&#9940;</span><span class="check-lbl">No se mueve</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="SE MUEVE SOLO"><span class="check-icon">&#9888;&#65039;</span><span class="check-lbl">Se mueve solo</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="SOLO AVANZA"><span class="check-icon">&#10145;&#65039;</span><span class="check-lbl">Solo avanza</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="SOLO RETROCEDE"><span class="check-icon">&#11013;&#65039;</span><span class="check-lbl">Solo retrocede</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="NO SE QUEDA FRENADO"><span class="check-icon">&#128721;</span><span class="check-lbl">No se queda frenado</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="NO SE PUEDE GIRAR"><span class="check-icon">&#128260;</span><span class="check-lbl">No se puede girar</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="SIN FUERZA"><span class="check-icon">&#128267;</span><span class="check-lbl">Sin fuerza</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="NO CARGA"><span class="check-icon">&#9889;</span><span class="check-lbl">No carga</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="SOPORTES DE CEPILLOS"><span class="check-icon">&#129749;</span><span class="check-lbl">Soportes de cepillos</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="LUCES"><span class="check-icon">&#128161;</span><span class="check-lbl">Luces</span></label>
+        <label class="check-item"><input type="checkbox" class="check-box" value="OTROS"><span class="check-icon">&#128296;</span><span class="check-lbl">Otros</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="num">3</div><h2>Notas y Fotograf&iacute;as</h2></div>
+    <div class="card-body">
+      <div><label class="lbl">Observaciones</label><textarea id="nota" placeholder="Describe la aver&iacute;a con m&aacute;s detalle..."></textarea></div>
+      <div>
+        <label class="lbl">Adjuntar Fotos / Video</label>
+        <div class="mbtn-row">
+          <button type="button" class="mbtn" onclick="document.getElementById('ic').click()">&#128248; C&aacute;mara</button>
+          <button type="button" class="mbtn" onclick="document.getElementById('ig').click()">&#128444;&#65039; Galer&iacute;a</button>
+          <button type="button" class="mbtn" onclick="document.getElementById('iv').click()">&#127909; V&iacute;deo</button>
+        </div>
+        <p style="font-size:.75rem;color:var(--gris-texto);text-align:center;margin-bottom:4px">Fotos: m&aacute;x 5 (10MB) &bull; V&iacute;deo: m&aacute;x 2 (60s / 50MB)</p>
+        <input type="file" id="ic" accept="image/*" capture="environment" style="display:none" onchange="addMedia(this,'foto')">
+        <input type="file" id="ig" accept="image/*" multiple style="display:none" onchange="addMedia(this,'foto')">
+        <input type="file" id="iv" accept="video/*" style="display:none" onchange="addMedia(this,'video')">
+        <div id="preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="num">4</div><h2>Enviar Parte</h2></div>
+    <div class="card-body">
+      <div class="btn-row">
+        <button class="btn btn-sec" onclick="showToast('PDF en desarrollo',false)">&#128196; Guardar PDF</button>
+        <button class="btn btn-env" id="btn-env" onclick="mostrarConfirm()">&#10004; Enviar Parte</button>
+      </div>
+      <p style="text-align:center;font-size:.75rem;color:var(--gris-texto);margin-top:10px;line-height:1.5">&#128274; Este parte es totalmente an&oacute;nimo. No se recogen ni se piden ning&uacute;n tipo de datos personales.</p>
+    </div>
+  </div>
+</main>
+
+<div id="confirm-modal">
+  <div style="background:#112e3a;border:1px solid var(--verde);border-radius:8px;max-width:420px;width:100%;overflow:hidden">
+    <div style="background:var(--verde);padding:14px 20px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:1.3rem">&#9888;&#65039;</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;text-transform:uppercase;color:#fff">Confirmar env&iacute;o</span>
+    </div>
+    <div style="padding:20px"><p style="font-size:.95rem;margin-bottom:14px">Revisa que todos los datos son correctos:</p>
+      <div id="resumen" style="background:var(--azul);border:1px solid var(--azul-claro);border-radius:4px;padding:14px;font-size:.88rem;line-height:1.8;color:var(--gris-texto)"></div>
+    </div>
+    <div style="display:flex;gap:10px;padding:0 20px 20px">
+      <button onclick="cerrarConfirm()" style="-webkit-appearance:none;flex:1;padding:14px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;text-transform:uppercase;cursor:pointer;background:var(--azul-medio);color:var(--texto);border:1px solid var(--azul-claro)">&#10005; Corregir</button>
+      <button id="btn-ok" onclick="confirmarEnvio()" style="-webkit-appearance:none;flex:1;padding:14px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;text-transform:uppercase;cursor:pointer;background:var(--verde);color:#fff;border:none">&#10004; Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="exito">
+  <div style="text-align:center;animation:aparecer .4s ease">
+    <div style="font-size:5rem;margin-bottom:20px">&#9989;</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:2rem;color:var(--verde);text-transform:uppercase;margin-bottom:12px">Parte Enviado</div>
+    <p style="color:var(--gris-texto);margin-bottom:30px;line-height:1.6">Tu parte ha sido registrado correctamente.<br>El equipo t&eacute;cnico lo revisar&aacute; en breve.</p>
+    <button onclick="resetForm()" style="-webkit-appearance:none;background:var(--verde);border:none;border-radius:8px;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.1rem;text-transform:uppercase;padding:18px 36px;cursor:pointer">&#43; Nuevo Parte</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<footer style="margin-top:32px;padding:16px 14px;text-align:center;border-top:1px solid var(--azul-claro)">
+  <p style="font-size:.68rem;color:var(--gris-texto);line-height:1.7">Desarrollado por <strong style="color:var(--texto)">Jos&eacute; Carlos P&eacute;rez Gonz&aacute;lez</strong><br>&copy; 2026 &middot; Todos los derechos reservados</p>
+</footer>
+
+<script>
+var SURL='https://ruqzfrhfnmholbqsrelz.supabase.co';
+var SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1cXpmcmhmbm1ob2xicXNyZWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDMzNzIsImV4cCI6MjA4OTU3OTM3Mn0.5HSqvUKt5KnXCtpkRPSYoTRa4zceqVS-1YnCIkx7Xqg';
+var db=supabase.createClient(SURL,SKEY);
+var CC={203:"Cebada",204:"Cebada",205:"Santa Engracia",206:"Balseiro",207:"Plaza de Espana",208:"Cebada",209:"Santa Cruz de Marcenado",210:"Poeta Joan Maragall",211:"Cebada",212:"Plaza de Espana",213:"Santa Cruz de Marcenado",214:"Margaritas",216:"Plaza de Espana",217:"Santa Cruz de Marcenado",221:"Santa Cruz de Marcenado",222:"Paseo de la Direccion",223:"Cebada",225:"Santa Engracia",226:"Paseo de la Direccion",228:"Cebada",231:"Santa Cruz de Marcenado",232:"Margaritas",233:"Cebada",234:"Plaza de Espana",235:"Cebada",236:"Santa Engracia",237:"Martires de la Ventanilla",238:"Plaza de Espana",239:"Plaza de Espana",240:"Cebada",241:"Santa Cruz de Marcenado",242:"Margaritas",243:"Cebada",244:"Plaza de Espana",245:"Fucar",246:"Santa Engracia",247:"Paseo de la Direccion",250:"Huertas",251:"Santa Cruz de Marcenado",252:"Margaritas",253:"Cebada",254:"Cebada",255:"Cebada",256:"Santa Cruz de Marcenado",257:"Poeta Joan Maragall",260:"Huertas",261:"Santa Cruz de Marcenado",262:"Paseo de la Direccion",263:"Reyes",264:"Reyes",265:"Reyes",266:"Santa Engracia",267:"Martires de la Ventanilla",268:"Plaza de Espana",269:"Fucar",270:"Plaza de Espana",271:"Santa Engracia",272:"Poeta Joan Maragall",273:"Plaza de Espana",274:"Fucar",275:"Fucar",276:"Santa Cruz de Marcenado",277:"Paseo de la Direccion",278:"Fucar",279:"Huertas",281:"Santa Engracia",282:"Paseo de la Direccion",283:"Plaza de Espana",286:"Santa Cruz de Marcenado",287:"Margaritas",289:"Huertas",290:"Fucar",291:"Cebada",292:"Huertas",293:"Reyes",294:"Huertas",295:"Santa Engracia",296:"Santa Cruz de Marcenado",297:"Balseiro",298:"Poeta Joan Maragall",299:"Paseo de la Direccion",300:"Plaza de Espana",301:"Plaza de Espana",302:"Margaritas",303:"Santa Engracia",304:"Cebada",305:"Fucar",306:"Huertas",307:"Paseo de la Direccion",308:"Martires de la Ventanilla",309:"Plaza de Espana",310:"Santa Cruz de Marcenado",311:"Balseiro",312:"Margaritas",313:"Reyes",314:"Fucar",315:"Santa Engracia",316:"Cebada",317:"Plaza de Espana"};
+var MF=5,MFmb=10,MV=2,MVmb=50,MVs=60;
+var media=[];
+(function(){var h=new Date();document.getElementById('fecha').value=h.getFullYear()+'-'+String(h.getMonth()+1).padStart(2,'0')+'-'+String(h.getDate()).padStart(2,'0');})();
+function autoCanon(v){var n=parseInt(v);var e=document.getElementById('err-carro');if(!n){e.style.display='none';return;}if(n<200||n>320){e.style.display='block';return;}e.style.display='none';var c=CC[n];if(!c)return;var s=document.getElementById('canton');for(var i=0;i<s.options.length;i++){if(s.options[i].text.replace(/[^a-zA-Z]/g,'').toLowerCase().indexOf(c.replace(/[^a-zA-Z]/g,'').toLowerCase().substring(0,5))!==-1){s.selectedIndex=i;return;}}}
+function addMedia(inp,tipo){var files=Array.from(inp.files);inp.value='';files.forEach(function(f){var nF=media.filter(function(m){return m.tipo==='foto';}).length;var nV=media.filter(function(m){return m.tipo==='video';}).length;if(tipo==='foto'){if(nF>=MF){showToast('Max '+MF+' fotos',true);return;}if(f.size/1024/1024>MFmb){showToast('Foto max '+MFmb+'MB',true);return;}var r=new FileReader();r.onload=function(e){var img=new Image();img.onload=function(){var c=document.createElement('canvas');var MAX=1400;var w=img.width;var h=img.height;if(w>MAX){h=Math.round(h*MAX/w);w=MAX;}if(h>MAX){w=Math.round(w*MAX/h);h=MAX;}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);media.push({tipo:'foto',dataURL:c.toDataURL('image/jpeg',0.78)});renderMedia();};img.src=e.target.result;};r.readAsDataURL(f);}else{if(nV>=MV){showToast('Max '+MV+' videos',true);return;}if(f.size/1024/1024>MVmb){showToast('Video max '+MVmb+'MB',true);return;}var url=URL.createObjectURL(f);var v=document.createElement('video');v.preload='metadata';v.onloadedmetadata=function(){URL.revokeObjectURL(url);if(v.duration>MVs){showToast('Video max '+MVs+'s (este '+Math.round(v.duration)+'s)',true);return;}var r2=new FileReader();r2.onload=function(e2){media.push({tipo:'video',file:f,dataURL:e2.target.result,dur:Math.round(v.duration)});renderMedia();};r2.readAsDataURL(f);};v.src=url;}});}
+function renderMedia(){var el=document.getElementById('preview');el.innerHTML='';media.forEach(function(m,i){var d=document.createElement('div');d.className='thumb';if(m.tipo==='foto'){var img=document.createElement('img');img.src=m.dataURL;d.appendChild(img);}else{var v=document.createElement('video');v.src=m.dataURL;v.muted=true;v.style.cssText='width:100%;height:100%;object-fit:cover';d.appendChild(v);var lbl=document.createElement('div');lbl.className='vlbl';lbl.textContent=m.dur+'s';d.appendChild(lbl);}var del=document.createElement('button');del.className='del';del.innerHTML='&#x2715;';del.onclick=(function(idx){return function(e){e.stopPropagation();media.splice(idx,1);renderMedia();};})(i);d.appendChild(del);el.appendChild(d);});}
+function mostrarConfirm(){var fecha=document.getElementById('fecha').value;var canton=document.getElementById('canton').value;var carro=document.getElementById('carro').value;var avs=Array.from(document.querySelectorAll('.check-box:checked')).map(function(cb){return cb.value;});var nota=document.getElementById('nota').value.trim();if(!fecha){showToast('Indica la fecha',true);return;}if(!canton){showToast('Selecciona el canton',true);return;}if(!carro||parseInt(carro)<200||parseInt(carro)>320){showToast('Numero de carro invalido',true);return;}if(!avs.length){showToast('Selecciona al menos una averia',true);return;}document.getElementById('resumen').innerHTML='<strong style="color:var(--texto)">Carro:</strong> '+carro+'<br><strong style="color:var(--texto)">Canton:</strong> '+canton+'<br><strong style="color:var(--texto)">Fecha:</strong> '+fecha+'<br><strong style="color:var(--texto)">Averias:</strong> '+avs.map(function(a){return '<span style="display:inline-block;background:var(--azul-medio);border:1px solid var(--azul-claro);color:var(--verde);padding:2px 7px;border-radius:2px;font-size:.8rem;margin:2px">'+a+'</span>';}).join('')+(nota?'<br><strong style="color:var(--texto)">Notas:</strong> '+nota:'')+(media.length?'<br><strong style="color:var(--texto)">Archivos:</strong> '+media.length+' adjunto'+(media.length>1?'s':''):'');document.getElementById('confirm-modal').style.display='flex';}
+function cerrarConfirm(){document.getElementById('confirm-modal').style.display='none';}
+async function confirmarEnvio(){var fecha=document.getElementById('fecha').value;var canton=document.getElementById('canton').value;var carro=parseInt(document.getElementById('carro').value);var avs=Array.from(document.querySelectorAll('.check-box:checked')).map(function(cb){return cb.value;});var nota=document.getElementById('nota').value.trim();var btn=document.getElementById('btn-ok');btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Enviando...';try{var cr=await db.from('ec_carros').select('id').eq('numero',carro).single();if(cr.error||!cr.data)throw new Error('Carro '+carro+' no encontrado');var carroId=cr.data.id;var urlF=[];var fItems=media.filter(function(m){return m.tipo==='foto';});for(var i=0;i<fItems.length;i++){var blob=await(await fetch(fItems[i].dataURL)).blob();var ruta='ecarr/'+carro+'/foto_'+Date.now()+'_'+i+'.jpg';var up=await db.storage.from('gmao-files').upload(ruta,blob,{upsert:false,contentType:'image/jpeg'});if(!up.error)urlF.push(db.storage.from('gmao-files').getPublicUrl(ruta).data.publicUrl);}var urlV=[];var vItems=media.filter(function(m){return m.tipo==='video';});for(var j=0;j<vItems.length;j++){var vf=vItems[j].file;var ext=(vf.name||'video').split('.').pop()||'mp4';var vruta='ecarr/'+carro+'/video_'+Date.now()+'_'+j+'.'+ext;var vup=await db.storage.from('gmao-files').upload(vruta,vf,{upsert:true,contentType:vf.type||'video/mp4'});if(vup.error){console.error('Video error:',JSON.stringify(vup.error));showToast('Error video: '+vup.error.message,true);}else{var vurl=db.storage.from('gmao-files').getPublicUrl(vruta).data.publicUrl;console.log('Video OK:',vurl);urlV.push(vurl);}}var allUrls=urlF.concat(urlV);var r=await db.from('ec_partes').insert({carro_id:carroId,carro_num:carro,canton:canton,averias:avs.join('|'),nota_op:nota||null,fotos:allUrls.length?allUrls.join('\n'):null,estado:'pendiente',fuente:'app'});if(r.error)throw r.error;await db.from('ec_carros').update({estado:'pendiente',updated_at:new Date().toISOString()}).eq('numero',carro);cerrarConfirm();document.getElementById('exito').classList.add('show');}catch(e){btn.disabled=false;btn.textContent='\u2714 Confirmar';showToast('Error: '+(e.message||'Error al enviar'),true);console.error(e);}}
+function resetForm(){document.getElementById('exito').classList.remove('show');document.getElementById('carro').value='';document.getElementById('canton').value='';document.getElementById('nota').value='';document.querySelectorAll('.check-box').forEach(function(cb){cb.checked=false;});media=[];renderMedia();document.getElementById('btn-ok').disabled=false;document.getElementById('btn-ok').textContent='\u2714 Confirmar';var h=new Date();document.getElementById('fecha').value=h.getFullYear()+'-'+String(h.getMonth()+1).padStart(2,'0')+'-'+String(h.getDate()).padStart(2,'0');window.scrollTo(0,0);}
+function showToast(msg,err){var t=document.getElementById('toast');t.textContent=msg;t.className=err?'show err':'show';clearTimeout(t._t);t._t=setTimeout(function(){t.className='';},3000);}
+</script>
+</body>
+</html>
