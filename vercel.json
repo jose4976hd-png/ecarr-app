@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/formulario", "destination": "/formulario.html" },
+    { "source": "/despiece", "destination": "/despiece.html" }
+  ]
+}
